@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.controller;
+package ir.sobhan.restapi.controller.individuals;
 
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
@@ -25,14 +25,14 @@ public class CustomUserController {
         return customUserRepository.findAll();
     }
 
-    @PostMapping("/register")
-    public String registerUser(@RequestBody CustomUser customUser) {
-        String rawPassword = customUser.getPassword();
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        customUser.setPassword(encodedPassword);
-
-        customUserRepository.save(customUser);
-
-        return "Registered successfully";
-    }
+//    @PostMapping("/register")
+//    public String registerUser(@RequestBody CustomUser customUser) {
+//        String rawPassword = customUser.getPassword();
+//        String encodedPassword = passwordEncoder.encode(rawPassword);
+//        customUser.setPassword(encodedPassword);
+//
+//        customUserRepository.save(customUser);
+//
+//        return "Registered successfully";
+//    }
 }

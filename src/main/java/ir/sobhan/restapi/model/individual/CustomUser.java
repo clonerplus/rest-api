@@ -8,14 +8,13 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class CustomUser implements UserDetails {
     @Id
     @GeneratedValue
@@ -29,15 +28,21 @@ public class CustomUser implements UserDetails {
     @JsonManagedReference
     @OneToOne(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Instructor instructor;
+    @OneToOne(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Student student;
     @Enumerated(EnumType.STRING)
     private Role role;
     @JsonManagedReference
     @OneToMany(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
 
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println("&&@$#&$!");return role.getAuthorities();
+        return role.getAuthorities();
     }
 
     @Override

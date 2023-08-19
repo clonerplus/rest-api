@@ -1,11 +1,22 @@
 package ir.sobhan.restapi.model.coursesection;
 
-public class Course {
-    private final String title;
-    private final int units;
+import jakarta.persistence.*;
+import lombok.*;
 
-    public Course(String title, int units) {
-        this.title = title;
-        this.units = units;
-    }
+import java.util.List;
+
+@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Course {
+    @Id
+    @GeneratedValue
+    private long id;
+    private String title;
+    private int units;
+    @OneToMany(mappedBy = "course")
+    private List<CourseSection> courseSection;
+
 }

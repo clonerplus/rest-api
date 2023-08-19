@@ -29,12 +29,28 @@ public enum Role {
                     CUSTOM_USER_CREATE
             )
     ),
+    STAFF(
+            Set.of(
+                    STAFF_READ,
+                    STAFF_UPDATE,
+                    STAFF_DELETE,
+                    STAFF_CREATE
+            )
+    ),
     INSTRUCTOR(
             Set.of(
                     INSTRUCTOR_READ,
                     INSTRUCTOR_UPDATE,
                     INSTRUCTOR_DELETE,
                     INSTRUCTOR_CREATE
+            )
+    ),
+    STUDENT(
+            Set.of(
+                    STUDENT_READ,
+                    STUDENT_UPDATE,
+                    STUDENT_DELETE,
+                    STUDENT_CREATE
             )
     )
     ;

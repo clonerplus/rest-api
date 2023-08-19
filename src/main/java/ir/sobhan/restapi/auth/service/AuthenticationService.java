@@ -30,7 +30,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
         var customUser = CustomUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -41,13 +41,15 @@ public class AuthenticationService {
                 .role(Role.CUSTOM_USER)
                 .build();
         var savedCustomUser = customUserRepository.save(customUser);
-        var jwtToken = jwtService.generateToken(customUser);
-        var refreshToken = jwtService.generateRefreshToken(customUser);
-        saveUserToken(savedCustomUser, jwtToken);
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .refreshToken(refreshToken)
-                .build();
+
+        return "user successfully registered!";
+//        var jwtToken = jwtService.generateToken(customUser);
+//        var refreshToken = jwtService.generateRefreshToken(customUser);
+//        saveUserToken(savedCustomUser, jwtToken);
+//        return AuthenticationResponse.builder()
+//                .accessToken(jwtToken)
+//                .refreshToken(refreshToken)
+//                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

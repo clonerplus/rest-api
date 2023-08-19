@@ -1,11 +1,23 @@
 package ir.sobhan.restapi.model.coursesection;
 
-public class Term {
-    private final String title;
-    private final boolean open;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
-    public Term(String title, boolean open) {
-        this.title = title;
-        this.open = open;
-    }
+import java.util.List;
+
+@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Term {
+    @Id
+    @GeneratedValue
+    private long id;
+    private String title;
+    private boolean open;
+    @OneToMany(mappedBy = "term")
+    private List<CourseSection> courseSection;
+
 }

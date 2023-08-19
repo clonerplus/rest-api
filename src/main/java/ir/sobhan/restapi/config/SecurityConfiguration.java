@@ -55,7 +55,7 @@ public class SecurityConfiguration {
 //                                        "/webjars/**",
 //                                        "/swagger-ui.html",
 
-                                        new AntPathRequestMatcher("/registerx"),
+                                        new AntPathRequestMatcher("/register"),
                                         new AntPathRequestMatcher("/all-users"),
                                         new AntPathRequestMatcher("/all-instructors"),
                                         new AntPathRequestMatcher("/authenticate")
@@ -66,7 +66,7 @@ public class SecurityConfiguration {
 
 
 //                .requestMatchers("/authorize/instructor").hasAnyRole(ADMIN.name(), MANAGER.name())
-                .requestMatchers(new AntPathRequestMatcher("/authorize/instructor")).hasAnyRole(ADMIN.name())
+//                .requestMatchers(new AntPathRequestMatcher("/authorize/instructor")).hasAnyRole(ADMIN.name())
 //                                .requestMatchers(new AntPathRequestMatcher("/test")).hasAnyRole(ADMIN.name())
 
 

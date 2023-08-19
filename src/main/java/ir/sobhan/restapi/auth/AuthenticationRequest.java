@@ -1,10 +1,6 @@
 package ir.sobhan.restapi.auth;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -13,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class AuthenticationRequest {
 
     private String username;
-    String password;
+    private String password;
 }

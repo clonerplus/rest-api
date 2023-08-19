@@ -1,16 +1,15 @@
-package ir.sobhan.restapi.controller;
+package ir.sobhan.restapi.controller.individuals;
 
-import ir.sobhan.restapi.dao.CustomUserRepository;
-import ir.sobhan.restapi.dao.InstructorRepository;
-import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.model.individual.Instructor;
+import ir.sobhan.restapi.auth.Role;
+import ir.sobhan.restapi.dao.*;
+import ir.sobhan.restapi.model.individual.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class InstructorController {
@@ -19,7 +18,7 @@ public class InstructorController {
     private final InstructorRepository instructorRepository;
 
     @Autowired
-    public InstructorController(CustomUserRepository customUserRepository, InstructorRepository instructorRepository, PasswordEncoder passwordEncoder) {
+    public InstructorController(CustomUserRepository customUserRepository, InstructorRepository instructorRepository) {
         this.customUserRepository = customUserRepository;
         this.instructorRepository = instructorRepository;
     }
@@ -29,21 +28,23 @@ public class InstructorController {
         return instructorRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/instructor")
-    public String authorizeInstructor(@RequestParam String username, @RequestBody Instructor instructor) {
+    public ResponseEntity<String> authorizeInstructor(@RequestParam String username, @RequestBody Instructor instructor) {
 
         if (username == null)
-            return "Invalid username!";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username!");
 
         Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
 
         if (customUser.isEmpty())
-            return "username not found!";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found!");
 
         instructor.setCustomUser(customUser.get());
         customUser.get().setInstructor(instructor);
+        customUser.get().setRole(Role.INSTRUCTOR);
         instructorRepository.save(instructor);
 
-        return "Authorized user to instructor limits successfully";
+        return ResponseEntity.ok("Authorized user to instructor limits successfully");
     }
 }
