@@ -21,6 +21,6 @@ public class CourseSection {
     private Term term;
     @ManyToOne
     private Course course;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<CourseSectionRegistration> courseSectionRegistration = new ArrayList<>();
 }

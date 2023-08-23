@@ -5,6 +5,8 @@ import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.request.CourseSectionRequest;
+import ir.sobhan.restapi.response.GetStudentScoreResponse;
+import ir.sobhan.restapi.service.coursesection.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class StudentController {
@@ -20,16 +23,18 @@ public class StudentController {
     private final StudentRepository studentRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final CourseSectionRegistrationRepository courseSectionRegistrationRepository;
+    private final TermService termService;
 
     @Autowired
     public StudentController(CustomUserRepository customUserRepository,
                              StudentRepository studentRepository,
                              CourseSectionRepository courseSectionRepository,
-                             CourseSectionRegistrationRepository courseSectionRegistrationRepository) {
+                             CourseSectionRegistrationRepository courseSectionRegistrationRepository, TermService termService) {
         this.customUserRepository = customUserRepository;
         this.studentRepository = studentRepository;
         this.courseSectionRepository = courseSectionRepository;
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
+        this.termService = termService;
     }
 
     @GetMapping("/all-students")
@@ -87,11 +92,39 @@ public class StudentController {
         courseSection.get().setCourseSectionRegistration(courseSectionRegistrationList);
 
         courseSectionRegistrationRepository.save(courseSectionRegistration);
-        studentRepository.updateStudentByCustomUserUsername(authentication.getName(), student.get());
-        courseSectionRepository.updateByTermTitleAndCourseTitle(
-                courseSectionRequest.getTermTitle(),
-                courseSectionRequest.getCourseTitle());
+        studentRepository.save(student.get());
+        courseSectionRepository.save(courseSection.get());
 
         return ResponseEntity.ok("joined to course section successfully!");
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/check-scores/{termId}")
+    public ResponseEntity<GetStudentScoreResponse> getTermScores(
+            @PathVariable long termId, Authentication authentication) {
+
+        var student = studentRepository.findByCustomUserUsername(authentication.getName());
+
+
+        Map<String, Double> courseScores = student.get().getCourseSectionRegistration().stream()
+                .filter(courseSectionRegistration ->
+                        courseSectionRegistration.getCourseSection().getTerm().getId() == termId)
+                .collect(Collectors.toMap(
+                        courseSectionRegistration ->
+                                courseSectionRegistration.getCourseSection().getCourse().getTitle(),
+                        CourseSectionRegistration::getScore
+                ));
+
+        double termAverageScore = courseScores.values().stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.averagingDouble(Double::doubleValue));
+
+        GetStudentScoreResponse getStudentScoreResponse = GetStudentScoreResponse.builder()
+                .scores(courseScores)
+                .average(termAverageScore)
+                .build();
+
+
+        return ResponseEntity.ok(getStudentScoreResponse);
     }
 }

@@ -1,12 +1,12 @@
-package ir.sobhan.restapi.auth.service;
+package ir.sobhan.restapi.service.individuals;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ir.sobhan.restapi.auth.AuthenticationRequest;
-import ir.sobhan.restapi.auth.AuthenticationResponse;
-import ir.sobhan.restapi.auth.RegisterRequest;
+import ir.sobhan.restapi.request.AuthenticationRequest;
+import ir.sobhan.restapi.response.AuthenticationResponse;
+import ir.sobhan.restapi.request.RegisterRequest;
 import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.auth.token.Token;
+import ir.sobhan.restapi.auth.Token;
 import ir.sobhan.restapi.config.JwtService;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.TokenRepository;
@@ -14,6 +14,7 @@ import ir.sobhan.restapi.model.individual.CustomUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,13 +23,25 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
     private final CustomUserRepository customUserRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    public AuthenticationService(CustomUserRepository customUserRepository,
+                                 TokenRepository tokenRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 JwtService jwtService,
+                                 AuthenticationManager authenticationManager) {
+        this.customUserRepository = customUserRepository;
+        this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+    }
 
     public String register(RegisterRequest request) {
         var customUser = CustomUser.builder()

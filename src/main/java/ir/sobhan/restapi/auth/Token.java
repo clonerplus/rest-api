@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.auth.token;
+package ir.sobhan.restapi.auth;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import ir.sobhan.restapi.model.individual.CustomUser;

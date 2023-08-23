@@ -7,13 +7,14 @@ import lombok.*;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Instructor {
     @Id
     @GeneratedValue
     private Long id;
-    private enum Rank {ASSISTANT, ASSOCIATE, FULL}
+    public enum Rank {ASSISTANT, ASSOCIATE, FULL}
     private Rank rank;
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)

@@ -32,6 +32,11 @@ public class CourseService {
         return courseRepository.findByTitle(title);
     }
 
+    public Optional<Course> getCourseById(long id) {
+
+        return courseRepository.findById(id);
+    }
+
     public ListResponse<Course> getAllCourses() {
 
         return ListResponse.<Course>builder()

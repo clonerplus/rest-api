@@ -1,7 +1,9 @@
-package ir.sobhan.restapi.auth.controller;
+package ir.sobhan.restapi.controller.individuals.auth;
 
-import ir.sobhan.restapi.auth.*;
-import ir.sobhan.restapi.auth.service.AuthenticationService;
+import ir.sobhan.restapi.request.AuthenticationRequest;
+import ir.sobhan.restapi.request.RegisterRequest;
+import ir.sobhan.restapi.response.AuthenticationResponse;
+import ir.sobhan.restapi.service.individuals.AuthenticationService;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

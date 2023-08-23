@@ -1,9 +1,6 @@
-package ir.sobhan.restapi.auth;
+package ir.sobhan.restapi.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder

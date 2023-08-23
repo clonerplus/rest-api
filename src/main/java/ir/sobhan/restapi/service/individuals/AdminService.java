@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.service;
+package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
 import ir.sobhan.restapi.config.SecurityConfig;
@@ -39,9 +39,21 @@ public class AdminService {
         String hashedPassword = passwordEncoder.encode(password);
 
         // Create the user and save it to the database
-        CustomUser Admin = new
-                CustomUser(1, username, hashedPassword,
-                null, null, true, true, null, Role.ADMIN, null);
-        customUserRepository.save(Admin);
+        CustomUser admin = CustomUser.builder()
+                .id(1)
+                .username(username)
+                .password(hashedPassword)
+                .phone(null)
+                .nationalId(null)
+                .admin(true)
+                .instructor(null)
+                .student(null)
+                .role(Role.ADMIN)
+                .tokens(null)
+                .build();
+//        CustomUser Admin = new
+//                CustomUser(1, username, hashedPassword,
+//                null, null, true, true, null, null, Role.ADMIN, null);
+        customUserRepository.save(admin);
     }
 }

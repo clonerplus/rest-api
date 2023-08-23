@@ -6,6 +6,7 @@ import ir.sobhan.restapi.model.coursesection.Term;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
 public class CourseController {
 
     private final CourseService courseService;
+    @Autowired
+    public CourseController(CourseService courseService) {
+        this.courseService = courseService;
+    }
 
     @GetMapping("all-courses")
     public ResponseEntity<ListResponse<Course>> showAllCourses() {
