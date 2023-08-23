@@ -1,26 +1,19 @@
 package ir.sobhan.restapi.conroller.individuals;
 
-import ir.sobhan.restapi.controller.individuals.InstructorController;
-import ir.sobhan.restapi.controller.individuals.StudentController;
+import ir.sobhan.restapi.controller.individuals.*;
+import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StudentRepository;
-import ir.sobhan.restapi.model.coursesection.Course;
-import ir.sobhan.restapi.model.coursesection.CourseSection;
-import ir.sobhan.restapi.model.coursesection.Term;
-import ir.sobhan.restapi.model.individual.Instructor;
-import ir.sobhan.restapi.model.individual.Student;
-import ir.sobhan.restapi.request.CourseSectionRequest;
-import ir.sobhan.restapi.request.RegisterRequest;
-import ir.sobhan.restapi.service.coursesection.CourseSectionService;
-import ir.sobhan.restapi.service.coursesection.CourseService;
-import ir.sobhan.restapi.service.coursesection.TermService;
+import ir.sobhan.restapi.model.coursesection.*;
+import ir.sobhan.restapi.model.individual.*;
+import ir.sobhan.restapi.request.*;
+import ir.sobhan.restapi.service.coursesection.*;
 import ir.sobhan.restapi.service.individuals.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @SpringBootTest
 @Service
@@ -39,6 +32,8 @@ public class TestUtils {
     InstructorController instructorController;
     @Autowired
     StudentRepository studentRepository;
+    @Autowired
+    CustomUserRepository customUserRepository;
     public RegisterRequest generateStudentRegisterRequest() {
 
         return RegisterRequest.builder()
@@ -144,6 +139,11 @@ public class TestUtils {
     public Optional<Student> getStudentById(long id) {
 
         return studentRepository.findById(id);
+    }
+
+    public void clearCustomUserRepository() {
+
+        customUserRepository.deleteAll();
     }
 
 

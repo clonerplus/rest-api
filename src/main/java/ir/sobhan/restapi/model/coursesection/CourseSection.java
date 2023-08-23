@@ -22,5 +22,6 @@ public class CourseSection {
     @ManyToOne
     private Course course;
     @OneToMany(fetch = FetchType.EAGER)
+    @Builder.Default
     private List<CourseSectionRegistration> courseSectionRegistration = new ArrayList<>();
 }

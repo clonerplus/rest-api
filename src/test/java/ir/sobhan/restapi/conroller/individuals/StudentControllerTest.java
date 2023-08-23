@@ -11,6 +11,8 @@ import ir.sobhan.restapi.response.GetStudentScoreResponse;
 import ir.sobhan.restapi.service.coursesection.CourseService;
 import ir.sobhan.restapi.service.coursesection.TermService;
 import ir.sobhan.restapi.service.individuals.AuthenticationService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,12 +21,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StudentControllerTest {
 
     @Autowired
@@ -43,6 +47,16 @@ public class StudentControllerTest {
     CourseSectionController courseSectionController;
     @Autowired
     TestUtils testUtils;
+
+//    @BeforeEach
+//    void setUp() {
+//        testUtils.generateStudent();
+//    }
+//
+//    @AfterEach
+//    void tearDown() {
+//        testUtils.clearCustomUserRepository();
+//    }
     @Test
     @WithMockUser(roles = "ADMIN")
     void authorizeStudent() {

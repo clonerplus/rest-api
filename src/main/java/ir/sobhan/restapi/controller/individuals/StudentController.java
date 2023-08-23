@@ -6,7 +6,6 @@ import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.request.CourseSectionRequest;
 import ir.sobhan.restapi.response.GetStudentScoreResponse;
-import ir.sobhan.restapi.service.coursesection.TermService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,18 +22,16 @@ public class StudentController {
     private final StudentRepository studentRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final CourseSectionRegistrationRepository courseSectionRegistrationRepository;
-    private final TermService termService;
 
     @Autowired
     public StudentController(CustomUserRepository customUserRepository,
                              StudentRepository studentRepository,
                              CourseSectionRepository courseSectionRepository,
-                             CourseSectionRegistrationRepository courseSectionRegistrationRepository, TermService termService) {
+                             CourseSectionRegistrationRepository courseSectionRegistrationRepository) {
         this.customUserRepository = customUserRepository;
         this.studentRepository = studentRepository;
         this.courseSectionRepository = courseSectionRepository;
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
-        this.termService = termService;
     }
 
     @GetMapping("/all-students")

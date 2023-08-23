@@ -58,7 +58,9 @@ public class SecurityConfiguration {
                                         new AntPathRequestMatcher("/register"),
                                         new AntPathRequestMatcher("/all-users"),
                                         new AntPathRequestMatcher("/all-instructors"),
-                                        new AntPathRequestMatcher("/authenticate")
+                                        new AntPathRequestMatcher("/authenticate"),
+                                        new AntPathRequestMatcher("/refresh-token"),
+                                        new AntPathRequestMatcher("/all*")
                                 ).permitAll()
 
 

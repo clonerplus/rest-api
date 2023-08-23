@@ -8,7 +8,7 @@
 		<version>3.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>ir.sobhan</groupId>
 	<artifactId>REST-API</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>REST API</name>
@@ -70,7 +70,6 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>2.2.220</version>
-			<scope>testdb</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -107,6 +106,7 @@
     </dependencies>
 
 	<build>
+		<finalName>rest-api</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -114,5 +114,13 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>internal.repo</id>
+			<name>rest-api</name>
+			<url>file:.</url>
+		</repository>
+	</distributionManagement>
 
 </project>

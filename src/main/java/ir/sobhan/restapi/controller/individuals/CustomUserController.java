@@ -11,12 +11,10 @@ import java.util.List;
 @RestController
 public class CustomUserController {
     private final CustomUserRepository customUserRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomUserController(CustomUserRepository customUserRepository, PasswordEncoder passwordEncoder) {
+    public CustomUserController(CustomUserRepository customUserRepository) {
         this.customUserRepository = customUserRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -25,14 +23,4 @@ public class CustomUserController {
         return customUserRepository.findAll();
     }
 
-//    @PostMapping("/register")
-//    public String registerUser(@RequestBody CustomUser customUser) {
-//        String rawPassword = customUser.getPassword();
-//        String encodedPassword = passwordEncoder.encode(rawPassword);
-//        customUser.setPassword(encodedPassword);
-//
-//        customUserRepository.save(customUser);
-//
-//        return "Registered successfully";
-//    }
 }

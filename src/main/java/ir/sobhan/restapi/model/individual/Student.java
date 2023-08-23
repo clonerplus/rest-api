@@ -22,6 +22,7 @@ public class Student {
     @OneToOne(fetch = FetchType.LAZY)
     private CustomUser customUser;
     @OneToMany(fetch = FetchType.EAGER)
+    @Builder.Default
     private List<CourseSectionRegistration> courseSectionRegistration = new ArrayList<>();
 
 }
