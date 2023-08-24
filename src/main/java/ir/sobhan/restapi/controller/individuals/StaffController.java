@@ -6,6 +6,7 @@ import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.individuals.CustomUserService;
 import ir.sobhan.restapi.service.individuals.InstructorService;
+import ir.sobhan.restapi.service.individuals.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,24 +15,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-public class InstructorController {
+public class StaffController {
 
-    private final InstructorService instructorService;
+    private final StaffService staffService;
 
     @Autowired
-    public InstructorController(InstructorService instructorService) {
-        this.instructorService = instructorService;
+    public StaffController(StaffService staffService) {
+        this.staffService = staffService;
     }
 
-    @GetMapping("/all-instructors")
-    public ResponseEntity<ListResponse<Instructor>> getAllInstructors() {
-        return instructorService.getAllInstructors();
+    @GetMapping("/all-staffs")
+    public ResponseEntity<ListResponse<Staff>> getAllInstructors() {
+        return staffService.getAllStaffs();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/authorize/instructor")
-    public ResponseEntity<String> authorizeInstructor(@RequestParam String username, @RequestBody Instructor instructor) {
+    @PostMapping("/authorize/staff")
+    public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
+                                                      @RequestBody Staff staff) {
 
-        return instructorService.authorizeInstructor(username, instructor);
+        return staffService.authorizeStaff(username, staff);
     }
 }

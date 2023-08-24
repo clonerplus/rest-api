@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.service.individuals;
+package ir.sobhan.restapi.service.auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,13 +7,12 @@ import ir.sobhan.restapi.response.AuthenticationResponse;
 import ir.sobhan.restapi.request.RegisterRequest;
 import ir.sobhan.restapi.auth.Role;
 import ir.sobhan.restapi.auth.Token;
-import ir.sobhan.restapi.config.JwtService;
+import ir.sobhan.restapi.service.auth.JwtService;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.TokenRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;

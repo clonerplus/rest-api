@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.config;
+package ir.sobhan.restapi.service.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

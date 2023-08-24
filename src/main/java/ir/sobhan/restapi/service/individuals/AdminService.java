@@ -1,7 +1,7 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.config.SecurityConfig;
+import ir.sobhan.restapi.config.AdminConfig;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdminService {
-    private static SecurityConfig securityConfig;
+    private static AdminConfig adminConfig;
     private static CustomUserRepository customUserRepository;
     private static PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setSecurityConfig(SecurityConfig securityConfig) {
-        AdminService.securityConfig = securityConfig;
+    public void setSecurityConfig(AdminConfig adminConfig) {
+        AdminService.adminConfig = adminConfig;
     }
 
     @Autowired
@@ -32,8 +32,8 @@ public class AdminService {
 
 
     public static void createAdmin() {
-        String username = securityConfig.getAdminUsername();
-        String password = securityConfig.getAdminPassword();
+        String username = adminConfig.getAdminUsername();
+        String password = adminConfig.getAdminPassword();
 
         // Hash the password
         String hashedPassword = passwordEncoder.encode(password);
@@ -46,7 +46,9 @@ public class AdminService {
                 .phone(null)
                 .nationalId(null)
                 .admin(true)
+                .active(true)
                 .instructor(null)
+                .staff(null)
                 .student(null)
                 .role(Role.ADMIN)
                 .tokens(null)

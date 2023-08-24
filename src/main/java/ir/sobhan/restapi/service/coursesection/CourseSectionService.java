@@ -1,20 +1,15 @@
 package ir.sobhan.restapi.service.coursesection;
 
 import ir.sobhan.restapi.dao.*;
-import ir.sobhan.restapi.model.coursesection.CourseSection;
-import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
-import ir.sobhan.restapi.request.CourseSectionRequest;
-import ir.sobhan.restapi.request.SetStudentsScoreRequest;
+import ir.sobhan.restapi.model.coursesection.*;
+import ir.sobhan.restapi.request.*;
 import ir.sobhan.restapi.response.ListResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseSectionService {
@@ -99,12 +94,12 @@ public class CourseSectionService {
     private void setStudentScore(List<CourseSectionRegistration> scores,
                                  String studentId, Double score) {
 
-        for (var courseSectionRegistration: scores) {
-            if (courseSectionRegistration.getStudent().getStudentId().equals(studentId)) {
-                courseSectionRegistration.setScore(score);
-                courseSectionRegistrationRepository.save(courseSectionRegistration);
-            }
-        }
+        scores.stream()
+                .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
+                .forEach(registration -> {
+                    registration.setScore(score);
+                    courseSectionRegistrationRepository.save(registration);
+                });
     }
 
     public ResponseEntity<String> setStudentsScore(
@@ -120,12 +115,7 @@ public class CourseSectionService {
 
         Map<String, Double> studentScores = setStudentsScoreRequest.getScores();
 
-        for (Map.Entry<String, Double> entry : studentScores.entrySet()) {
-            String studentId = entry.getKey();
-            Double score = entry.getValue();
-
-            setStudentScore(courseSectionRegistrations, studentId, score);
-        }
+        studentScores.forEach((studentId, score) -> setStudentScore(courseSectionRegistrations, studentId, score));
 
         return ResponseEntity.ok("updated scores successfully!");
 

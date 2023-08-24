@@ -28,6 +28,10 @@ public class CustomUser implements UserDetails {
     @JsonManagedReference
     @OneToOne(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Instructor instructor;
+    @JsonManagedReference
+    @OneToOne(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Staff staff;
+    @JsonManagedReference
     @OneToOne(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Student student;
     @Enumerated(EnumType.STRING)

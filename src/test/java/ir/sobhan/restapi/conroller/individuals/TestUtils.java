@@ -7,7 +7,7 @@ import ir.sobhan.restapi.model.coursesection.*;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.request.*;
 import ir.sobhan.restapi.service.coursesection.*;
-import ir.sobhan.restapi.service.individuals.AuthenticationService;
+import ir.sobhan.restapi.service.auth.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
