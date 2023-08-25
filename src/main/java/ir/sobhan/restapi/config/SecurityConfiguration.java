@@ -51,7 +51,17 @@ public class SecurityConfiguration {
                                         new AntPathRequestMatcher("/authenticate"),
                                         new AntPathRequestMatcher("/refresh-token"),
                                         new AntPathRequestMatcher("/all*"),
+                                        new AntPathRequestMatcher("/api/v1/auth/**"),
+                                        new AntPathRequestMatcher("/v2/api-docs"),
+                                        new AntPathRequestMatcher("/v3/api-docs"),
+                                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                                        new AntPathRequestMatcher("/swagger-resources"),
+                                        new AntPathRequestMatcher("/configuration/ui"),
+                                        new AntPathRequestMatcher("/configuration/security"),
+                                        new AntPathRequestMatcher("/swagger-ui/**"),
+                                        new AntPathRequestMatcher("/webjars/**"),
                                         new AntPathRequestMatcher("/swagger-ui.html")
+
                                 ).permitAll()
 
 
