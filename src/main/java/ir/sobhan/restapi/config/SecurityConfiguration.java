@@ -50,7 +50,8 @@ public class SecurityConfiguration {
                                         new AntPathRequestMatcher("/all-instructors"),
                                         new AntPathRequestMatcher("/authenticate"),
                                         new AntPathRequestMatcher("/refresh-token"),
-                                        new AntPathRequestMatcher("/all*")
+                                        new AntPathRequestMatcher("/all*"),
+                                        new AntPathRequestMatcher("/swagger-ui.html")
                                 ).permitAll()
 
 

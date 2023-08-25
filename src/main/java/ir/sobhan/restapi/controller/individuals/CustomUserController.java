@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.controller.individuals;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.response.ListResponse;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/api/v1/demo-controller")
+@Hidden
 @RestController
 public class CustomUserController {
     private final CustomUserService customUserService;
