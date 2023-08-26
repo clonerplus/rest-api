@@ -1,8 +1,7 @@
 package ir.sobhan.restapi.model.individual;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.auth.Token;
+import ir.sobhan.restapi.auth.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

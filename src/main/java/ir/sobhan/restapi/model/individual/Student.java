@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.model.individual;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +20,7 @@ public class Student {
     private String studentId;
     private Date startDate;
     private Degree degree;
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     private CustomUser customUser;
     @OneToMany(fetch = FetchType.EAGER)

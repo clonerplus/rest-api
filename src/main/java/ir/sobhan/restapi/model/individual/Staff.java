@@ -1,9 +1,8 @@
 package ir.sobhan.restapi.model.individual;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
@@ -14,6 +13,7 @@ public class Staff {
     @GeneratedValue
     private Long id;
     private String personnelId;
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     private CustomUser customUser;
 
