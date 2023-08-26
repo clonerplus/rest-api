@@ -16,11 +16,10 @@ public class CustomUserService {
         this.customUserRepository = customUserRepository;
     }
 
-    public ResponseEntity<ListResponse<CustomUser>> getAllCustomUsers() {
-        ListResponse<CustomUser> listResponse = ListResponse.<CustomUser>builder()
+    public ListResponse<CustomUser> getAllCustomUsers() {
+        return ListResponse.<CustomUser>builder()
                 .responseList(customUserRepository.findAll())
                 .build();
 
-        return ResponseEntity.ok(listResponse);
     }
 }

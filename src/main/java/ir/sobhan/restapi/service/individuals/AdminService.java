@@ -53,9 +53,6 @@ public class AdminService {
                 .role(Role.ADMIN)
                 .tokens(null)
                 .build();
-//        CustomUser Admin = new
-//                CustomUser(1, username, hashedPassword,
-//                null, null, true, true, null, null, Role.ADMIN, null);
         customUserRepository.save(admin);
     }
 }

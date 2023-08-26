@@ -25,24 +25,23 @@ public class InstructorService {
         this.instructorRepository = instructorRepository;
     }
 
-    public ResponseEntity<ListResponse<Instructor>> getAllInstructors() {
+    public ListResponse<Instructor> getAllInstructors() {
 
-        ListResponse<Instructor> listResponse = ListResponse.<Instructor>builder()
+        return ListResponse.<Instructor>builder()
                 .responseList(instructorRepository.findAll())
                 .build();
 
-        return ResponseEntity.ok(listResponse);
     }
 
-    public ResponseEntity<String> authorizeInstructor(String username, Instructor instructor) {
+    public String authorizeInstructor(String username, Instructor instructor) {
 
         if (username == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username!");
+            return "Invalid username!";
 
         Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
 
         if (customUser.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found!");
+            return "username not found!";
 
         instructor.setCustomUser(customUser.get());
         customUser.get().setInstructor(instructor);
@@ -50,6 +49,6 @@ public class InstructorService {
         instructorRepository.save(instructor);
 
 
-        return ResponseEntity.ok("Authorized user to instructor limits successfully");
+        return "Authorized user to instructor limits successfully";
     }
 }

@@ -55,13 +55,6 @@ public class AuthenticationService {
         var savedCustomUser = customUserRepository.save(customUser);
 
         return "user successfully registered!";
-//        var jwtToken = jwtService.generateToken(customUser);
-//        var refreshToken = jwtService.generateRefreshToken(customUser);
-//        saveUserToken(savedCustomUser, jwtToken);
-//        return AuthenticationResponse.builder()
-//                .accessToken(jwtToken)
-//                .refreshToken(refreshToken)
-//                .build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

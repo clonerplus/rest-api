@@ -13,18 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-//@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
-//    @PreAuthorize("hasAuthority('admin:read')")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
-    @GetMapping("/test")
-    public String test() {
-        return "yep";
-    }
 
     @PostMapping("/register")
     public ResponseEntity<String> register(

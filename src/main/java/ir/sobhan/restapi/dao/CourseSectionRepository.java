@@ -10,6 +10,5 @@ public interface CourseSectionRepository extends JpaRepository<CourseSection, Lo
 
     Optional<List<CourseSection>> findAllByTermTitle(String title);
     Optional<CourseSection> findByTermTitleAndCourseTitle(String termTitle, String courseTitle);
-
     void deleteByTermTitleAndCourseTitle(String termTitle, String courseTitle);
 }

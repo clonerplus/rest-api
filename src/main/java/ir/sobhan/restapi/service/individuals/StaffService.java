@@ -25,24 +25,22 @@ public class StaffService {
         this.staffRepository = staffRepository;
     }
 
-    public ResponseEntity<ListResponse<Staff>> getAllStaffs() {
+    public ListResponse<Staff> getAllStaffs() {
 
-        ListResponse<Staff> listResponse = ListResponse.<Staff>builder()
+        return ListResponse.<Staff>builder()
                 .responseList(staffRepository.findAll())
                 .build();
-
-        return ResponseEntity.ok(listResponse);
     }
 
-    public ResponseEntity<String> authorizeStaff(String username, Staff staff) {
+    public String authorizeStaff(String username, Staff staff) {
 
         if (username == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username!");
+            return "Invalid username!";
 
         Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
 
         if (customUser.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found!");
+            return "username not found!";
 
         staff.setCustomUser(customUser.get());
         customUser.get().setStaff(staff);
@@ -50,6 +48,6 @@ public class StaffService {
         staffRepository.save(staff);
 
 
-        return ResponseEntity.ok("Authorized user to staff limits successfully");
+        return "Authorized user to staff limits successfully";
     }
 }

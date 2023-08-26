@@ -1,11 +1,9 @@
 package ir.sobhan.restapi.auth;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ir.sobhan.restapi.auth.Permission.*;

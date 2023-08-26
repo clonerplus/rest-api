@@ -19,7 +19,7 @@ public class CustomUserController {
 
     @GetMapping("/all-users")
     public ResponseEntity<ListResponse<CustomUser>> getAllRegisteredUsers() {
-        return customUserService.getAllCustomUsers();
+        return ResponseEntity.ok(customUserService.getAllCustomUsers());
     }
 
 }

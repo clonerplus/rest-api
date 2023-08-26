@@ -1,11 +1,7 @@
 package ir.sobhan.restapi.controller.individuals;
 
-import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.response.ListResponse;
-import ir.sobhan.restapi.service.individuals.CustomUserService;
-import ir.sobhan.restapi.service.individuals.InstructorService;
 import ir.sobhan.restapi.service.individuals.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -26,7 +22,7 @@ public class StaffController {
 
     @GetMapping("/all-staffs")
     public ResponseEntity<ListResponse<Staff>> getAllInstructors() {
-        return staffService.getAllStaffs();
+        return ResponseEntity.ok(staffService.getAllStaffs());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -34,6 +30,13 @@ public class StaffController {
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
                                                       @RequestBody Staff staff) {
 
-        return staffService.authorizeStaff(username, staff);
+        Map<String, HttpStatus> statusMap = new HashMap<>(
+                Map.of("Invalid username!", HttpStatus.BAD_REQUEST,
+                        "username not found!", HttpStatus.NOT_FOUND,
+                        "Authorized user to staff limits successfully", HttpStatus.OK));
+
+        String resultMsg = staffService.authorizeStaff(username, staff);
+
+        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
     }
 }

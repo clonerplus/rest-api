@@ -39,34 +39,32 @@ public class StudentService {
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
     }
 
-    public ResponseEntity<ListResponse<Student>> getAllStudents() {
+    public ListResponse<Student> getAllStudents() {
 
-        ListResponse<Student> listResponse = ListResponse.<Student>builder()
+        return ListResponse.<Student>builder()
                 .responseList(studentRepository.findAll())
                 .build();
-
-        return ResponseEntity.ok(listResponse);
     }
 
-    public ResponseEntity<String> authorizeStudent(String username, Student student) {
+    public String authorizeStudent(String username, Student student) {
 
         if (username == null)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username!");
+            return "Invalid username!";
 
         Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
 
         if (customUser.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("username not found!");
+            return "username not found!";
 
         student.setCustomUser(customUser.get());
         customUser.get().setStudent(student);
         customUser.get().setRole(Role.STUDENT);
         studentRepository.save(student);
 
-        return ResponseEntity.ok("Authorized user to student limits successfully");
+        return "Authorized user to student limits successfully";
     }
 
-    public ResponseEntity<String> joinCourseSection(
+    public String joinCourseSection(
             CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
@@ -75,7 +73,7 @@ public class StudentService {
                 courseSectionRequest.getCourseTitle());
 
         if (courseSection.isEmpty())
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid term title or course title!");
+            return "Invalid term title or course title!";
 
 
         var student = studentRepository.findByCustomUserUsername(authentication.getName());
@@ -98,10 +96,10 @@ public class StudentService {
         studentRepository.save(student.get());
         courseSectionRepository.save(courseSection.get());
 
-        return ResponseEntity.ok("joined to course section successfully!");
+        return "joined to course section successfully!";
     }
 
-    public ResponseEntity<GetStudentScoreResponse> fetchTermScores(
+    public GetStudentScoreResponse fetchTermScores(
             long termId, Authentication authentication) {
 
         var student = studentRepository.findByCustomUserUsername(authentication.getName());
@@ -120,13 +118,11 @@ public class StudentService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.averagingDouble(Double::doubleValue));
 
-        GetStudentScoreResponse getStudentScoreResponse = GetStudentScoreResponse.builder()
+
+        return GetStudentScoreResponse.builder()
                 .scores(courseScores)
                 .average(termAverageScore)
                 .build();
-
-
-        return ResponseEntity.ok(getStudentScoreResponse);
     }
 
 }

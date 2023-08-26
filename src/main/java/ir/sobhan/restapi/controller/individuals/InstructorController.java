@@ -1,10 +1,7 @@
 package ir.sobhan.restapi.controller.individuals;
 
-import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.response.ListResponse;
-import ir.sobhan.restapi.service.individuals.CustomUserService;
 import ir.sobhan.restapi.service.individuals.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -25,13 +22,21 @@ public class InstructorController {
 
     @GetMapping("/all-instructors")
     public ResponseEntity<ListResponse<Instructor>> getAllInstructors() {
-        return instructorService.getAllInstructors();
+        return ResponseEntity.ok(instructorService.getAllInstructors());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/instructor")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username, @RequestBody Instructor instructor) {
 
-        return instructorService.authorizeInstructor(username, instructor);
+        Map<String, HttpStatus> statusMap = new HashMap<>(
+                Map.of("Invalid username!", HttpStatus.BAD_REQUEST,
+                        "username not found!", HttpStatus.NOT_FOUND,
+                        "Authorized user to instructor limits successfully", HttpStatus.OK));
+
+        String resultMsg = instructorService.authorizeInstructor(username, instructor);
+
+
+        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
     }
 }

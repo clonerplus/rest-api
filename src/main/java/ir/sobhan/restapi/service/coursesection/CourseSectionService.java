@@ -7,6 +7,7 @@ import ir.sobhan.restapi.response.ListResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -32,19 +33,19 @@ public class CourseSectionService {
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
     }
 
-    public ResponseEntity<String> buildCourseSection(
+    public String buildCourseSection(
             @NotNull CourseSectionRequest courseSectionRequest,
             String instructorName) {
         var term = termService.getTermByTitle(courseSectionRequest.getTermTitle());
         if (term.isEmpty()) {
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Term not found!");
+            return "Term not found!";
         }
 
         var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle());
         if (course.isEmpty()) {
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found!");
+            return "Course not found!";
         }
         var instructor = instructorRepository.findByCustomUserUsername(instructorName);
         var courseSection = CourseSection.builder()
@@ -55,7 +56,7 @@ public class CourseSectionService {
 
         courseSectionRepository.save(courseSection);
 
-        return ResponseEntity.ok("courseSection created successfully!");
+        return "courseSection created successfully!";
     }
 
     public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(String termTitle, String courseTitle) {
@@ -63,32 +64,29 @@ public class CourseSectionService {
         return courseSectionRepository.findByTermTitleAndCourseTitle(termTitle, courseTitle);
     }
 
-    public ResponseEntity<ListResponse<CourseSection>> getAllTermsAndStudentsCount(@NotNull String termTitle) {
+    public Optional<List<CourseSection>> getAllTermsAndStudentsCount(@NotNull String termTitle) {
 
-        var termCourseSections = courseSectionRepository.findAllByTermTitle(termTitle);
-
-        return termCourseSections.map(courseSections -> ResponseEntity.ok(ListResponse.<CourseSection>builder()
-                .responseList(courseSections)
-                .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return courseSectionRepository.findAllByTermTitle(termTitle);
     }
 
-    public ResponseEntity<ListResponse<CourseSection>> getAllTerms(@NotNull String termTitle) {
+    public Optional<List<CourseSection>> getAllTerms(@NotNull String termTitle) {
 
-        var termCourseSections = courseSectionRepository.findAllByTermTitle(termTitle);
-
-        return termCourseSections.map(courseSections -> ResponseEntity.ok(ListResponse.<CourseSection>builder()
-                .responseList(courseSections)
-                .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
+        return courseSectionRepository.findAllByTermTitle(termTitle);
     }
 
-    public ResponseEntity<String> deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest) {
+    public String deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
+                                                        Authentication authentication) {
+
+        if (!courseSectionRepository.findByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
+                courseSectionRequest.getCourseTitle()).get().getInstructor().getCustomUser().getUsername()
+                .equals(authentication.getName()))
+            return "user not authorized to delete this course section";
 
         courseSectionRepository.deleteByTermTitleAndCourseTitle(
                 courseSectionRequest.getTermTitle(),
                 courseSectionRequest.getCourseTitle());
 
-        return ResponseEntity.ok("successfully deleted term!");
+        return "successfully deleted term!";
     }
 
     private void setStudentScore(List<CourseSectionRegistration> scores,
@@ -102,14 +100,14 @@ public class CourseSectionService {
                 });
     }
 
-    public ResponseEntity<String> setStudentsScore(
+    public String setStudentsScore(
             long courseSectionId,
             @NotNull SetStudentsScoreRequest setStudentsScoreRequest) {
 
         Optional<CourseSection> courseSection = courseSectionRepository.findById(courseSectionId);
 
         if (courseSection.isEmpty())
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("course section not found!");
+            return "course section not found!";
 
         List<CourseSectionRegistration> courseSectionRegistrations = courseSection.get().getCourseSectionRegistration();
 
@@ -117,7 +115,7 @@ public class CourseSectionService {
 
         studentScores.forEach((studentId, score) -> setStudentScore(courseSectionRegistrations, studentId, score));
 
-        return ResponseEntity.ok("updated scores successfully!");
+        return "updated scores successfully!";
 
     }
 
