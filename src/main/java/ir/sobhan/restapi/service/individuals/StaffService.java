@@ -7,15 +7,12 @@ import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Staff;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 public class StaffService {
-
     private final CustomUserRepository customUserRepository;
     private final StaffRepository staffRepository;
 
@@ -26,7 +23,6 @@ public class StaffService {
     }
 
     public ListResponse<Staff> getAllStaffs() {
-
         return ListResponse.<Staff>builder()
                 .responseList(staffRepository.findAll())
                 .build();
@@ -46,7 +42,6 @@ public class StaffService {
         customUser.get().setStaff(staff);
         customUser.get().setRole(Role.STAFF);
         staffRepository.save(staff);
-
 
         return "Authorized user to staff limits successfully";
     }

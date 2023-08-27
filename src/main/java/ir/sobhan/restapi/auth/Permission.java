@@ -1,6 +1,5 @@
 package ir.sobhan.restapi.auth;
 
-import ir.sobhan.restapi.model.individual.Instructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

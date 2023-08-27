@@ -4,7 +4,6 @@ import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,16 +1,20 @@
 package ir.sobhan.restapi.service.coursesection;
 
-import ir.sobhan.restapi.dao.*;
-import ir.sobhan.restapi.model.coursesection.*;
-import ir.sobhan.restapi.request.*;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
+import ir.sobhan.restapi.dao.CourseSectionRepository;
+import ir.sobhan.restapi.dao.InstructorRepository;
+import ir.sobhan.restapi.model.coursesection.CourseSection;
+import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
+import ir.sobhan.restapi.request.CourseSectionRequest;
+import ir.sobhan.restapi.request.SetStudentsScoreRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CourseSectionService {
@@ -22,10 +26,10 @@ public class CourseSectionService {
     private final  CourseSectionRegistrationRepository courseSectionRegistrationRepository;
 
     @Autowired
-    public CourseSectionService(TermService termService,
-                                CourseService courseService,
+    public CourseSectionService(TermService termService, CourseService courseService,
                                 InstructorRepository instructorRepository,
-                                CourseSectionRepository courseSectionRepository, CourseSectionRegistrationRepository courseSectionRegistrationRepository) {
+                                CourseSectionRepository courseSectionRepository,
+                                CourseSectionRegistrationRepository courseSectionRegistrationRepository) {
         this.termService = termService;
         this.courseService = courseService;
         this.instructorRepository = instructorRepository;
@@ -38,13 +42,11 @@ public class CourseSectionService {
             String instructorName) {
         var term = termService.getTermByTitle(courseSectionRequest.getTermTitle());
         if (term.isEmpty()) {
-
             return "Term not found!";
         }
 
         var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle());
         if (course.isEmpty()) {
-
             return "Course not found!";
         }
         var instructor = instructorRepository.findByCustomUserUsername(instructorName);
@@ -59,18 +61,17 @@ public class CourseSectionService {
         return "courseSection created successfully!";
     }
 
-    public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(String termTitle, String courseTitle) {
+    public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(
+            String termTitle, String courseTitle) {
 
         return courseSectionRepository.findByTermTitleAndCourseTitle(termTitle, courseTitle);
     }
 
     public Optional<List<CourseSection>> getAllTermsAndStudentsCount(@NotNull String termTitle) {
-
         return courseSectionRepository.findAllByTermTitle(termTitle);
     }
 
     public Optional<List<CourseSection>> getAllTerms(@NotNull String termTitle) {
-
         return courseSectionRepository.findAllByTermTitle(termTitle);
     }
 
@@ -109,11 +110,13 @@ public class CourseSectionService {
         if (courseSection.isEmpty())
             return "course section not found!";
 
-        List<CourseSectionRegistration> courseSectionRegistrations = courseSection.get().getCourseSectionRegistration();
+        List<CourseSectionRegistration> courseSectionRegistrations = courseSection.get()
+                .getCourseSectionRegistration();
 
         Map<String, Double> studentScores = setStudentsScoreRequest.getScores();
 
-        studentScores.forEach((studentId, score) -> setStudentScore(courseSectionRegistrations, studentId, score));
+        studentScores.forEach((studentId, score) -> setStudentScore(courseSectionRegistrations,
+                studentId, score));
 
         return "updated scores successfully!";
 

@@ -18,26 +18,22 @@ public class TermController {
 
     @GetMapping("all-terms")
     public ResponseEntity<ListResponse<Term>> showAllTerms() {
-
         return ResponseEntity.ok(termService.getAllTerms());
     }
     @GetMapping("all-terms/{title}")
     public ResponseEntity<Optional<Term>> showTermByTitle(@PathVariable String title) {
-
         return ResponseEntity.ok(termService.getTermByTitle(title));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/term")
     public ResponseEntity<String> createTerm(@RequestBody Term term) {
-
         return ResponseEntity.ok(termService.buildTerm(term));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/term")
     public ResponseEntity<String> updateTerm(@RequestBody Term term) {
-
         return ResponseEntity.ok(termService.buildTerm(term));
     }
 

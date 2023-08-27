@@ -25,8 +25,7 @@ public class CourseSectionController {
     }
 
     @GetMapping("all-course-sections/{termTitle}")
-    public ResponseEntity<ListResponse<CourseSection>> showAllTerms(
-            @PathVariable String termTitle) {
+    public ResponseEntity<ListResponse<CourseSection>> showAllTerms(@PathVariable String termTitle) {
 
         var termCourseSections = courseSectionService.getAllTerms(termTitle);
 
@@ -35,8 +34,7 @@ public class CourseSectionController {
                 .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
     @GetMapping("all-course-sections-and-students/{termTitle}")
-    public ResponseEntity<ListResponse<CourseSection>> showTermByTitle(
-            @PathVariable String termTitle) {
+    public ResponseEntity<ListResponse<CourseSection>> showTermByTitle(@PathVariable String termTitle) {
 
         var termCourseSections = courseSectionService.getAllTermsAndStudentsCount(termTitle);
 
@@ -64,8 +62,7 @@ public class CourseSectionController {
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping("set-scores/{courseSectionId}")
-    public ResponseEntity<String> setStudentsScores(
-            @PathVariable long courseSectionId,
+    public ResponseEntity<String> setStudentsScores(@PathVariable long courseSectionId,
             @RequestBody SetStudentsScoreRequest setStudentsScoreRequest) {
 
         Map<String, HttpStatus> statusMap = new HashMap<>(
@@ -97,8 +94,7 @@ public class CourseSectionController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @DeleteMapping("/delete/course-section")
-    public ResponseEntity<String> deleteTerm(
-            @RequestBody CourseSectionRequest courseSectionRequest,
+    public ResponseEntity<String> deleteTerm(@RequestBody CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
         Map<String, HttpStatus> statusMap = new HashMap<>(

@@ -7,12 +7,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-
     private String username;
     private String password;
     private String phone;
     private String nationalId;
     private boolean admin;
     private boolean active;
-
 }

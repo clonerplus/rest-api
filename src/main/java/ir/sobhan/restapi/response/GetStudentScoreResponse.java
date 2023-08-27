@@ -10,7 +10,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetStudentScoreResponse {
-
     @JsonProperty
     private Map<String, Double> scores;
     @JsonProperty("average")

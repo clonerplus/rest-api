@@ -2,7 +2,6 @@ package ir.sobhan.restapi.service.coursesection;
 
 import ir.sobhan.restapi.dao.CourseRepository;
 import ir.sobhan.restapi.model.coursesection.Course;
-import ir.sobhan.restapi.model.coursesection.Term;
 import ir.sobhan.restapi.response.ListResponse;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -28,22 +27,18 @@ public class CourseService {
     }
 
     public Optional<Course> getCourseByTitle(@NotNull String title) {
-
         return courseRepository.findByTitle(title);
     }
 
     public Optional<Course> getCourseById(long id) {
-
         return courseRepository.findById(id);
     }
 
     public ListResponse<Course> getAllCourses() {
-
         return ListResponse.<Course>builder()
                 .responseList(courseRepository.findAll())
                 .build();
     }
-
     public String deleteTerm(@NotNull String title) {
 
         courseRepository.deleteTermByTitle(title);

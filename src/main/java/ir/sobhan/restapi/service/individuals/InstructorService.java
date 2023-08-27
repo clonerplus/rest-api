@@ -7,8 +7,6 @@ import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Instructor;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,13 +18,13 @@ public class InstructorService {
     private final InstructorRepository instructorRepository;
 
     @Autowired
-    public InstructorService(CustomUserRepository customUserRepository, InstructorRepository instructorRepository) {
+    public InstructorService(CustomUserRepository customUserRepository,
+                             InstructorRepository instructorRepository) {
         this.customUserRepository = customUserRepository;
         this.instructorRepository = instructorRepository;
     }
 
     public ListResponse<Instructor> getAllInstructors() {
-
         return ListResponse.<Instructor>builder()
                 .responseList(instructorRepository.findAll())
                 .build();
@@ -47,7 +45,6 @@ public class InstructorService {
         customUser.get().setInstructor(instructor);
         customUser.get().setRole(Role.INSTRUCTOR);
         instructorRepository.save(instructor);
-
 
         return "Authorized user to instructor limits successfully";
     }

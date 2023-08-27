@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseSectionRequest {
-
     private String TermTitle;
     private String CourseTitle;
 }

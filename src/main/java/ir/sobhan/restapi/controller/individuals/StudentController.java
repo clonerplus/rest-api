@@ -46,8 +46,7 @@ public class StudentController {
     }
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/join-course-section")
-    public ResponseEntity<String> joinCourseSection(
-            @RequestBody CourseSectionRequest courseSectionRequest,
+    public ResponseEntity<String> joinCourseSection(@RequestBody CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
         Map<String, HttpStatus> statusMap = new HashMap<>(
@@ -61,9 +60,8 @@ public class StudentController {
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/check-scores/{termId}")
-    public ResponseEntity<GetStudentScoreResponse> getTermScores(
-            @PathVariable long termId, Authentication authentication) {
-
+    public ResponseEntity<GetStudentScoreResponse> getTermScores(@PathVariable long termId,
+                                                                 Authentication authentication) {
         return ResponseEntity.ok(studentService.fetchTermScores(termId, authentication));
     }
 }

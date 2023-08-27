@@ -16,8 +16,7 @@ public class InstructorController {
     private final InstructorService instructorService;
 
     @Autowired
-    public InstructorController(
-            InstructorService instructorService) {
+    public InstructorController(InstructorService instructorService) {
         this.instructorService = instructorService;
     }
 
@@ -28,8 +27,8 @@ public class InstructorController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/instructor")
-    public ResponseEntity<String> authorizeInstructor(
-            @RequestParam String username, @RequestBody Instructor instructor) {
+    public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
+                                                      @RequestBody Instructor instructor) {
 
         Map<String, HttpStatus> statusMap = new HashMap<>(
                 Map.of("Invalid username!", HttpStatus.BAD_REQUEST,
@@ -37,7 +36,6 @@ public class InstructorController {
                         "Authorized user to instructor limits successfully", HttpStatus.OK));
 
         String resultMsg = instructorService.authorizeInstructor(username, instructor);
-
 
         return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
     }

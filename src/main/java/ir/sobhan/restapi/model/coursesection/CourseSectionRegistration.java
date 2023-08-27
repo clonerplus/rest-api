@@ -10,15 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseSectionRegistration {
-
     @Id
     @GeneratedValue
     private long id;

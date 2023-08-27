@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListResponse<T> {
-
     @JsonProperty
     private List<T> responseList;
 }

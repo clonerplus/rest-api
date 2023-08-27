@@ -2,23 +2,18 @@ package ir.sobhan.restapi.service.auth;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ir.sobhan.restapi.request.AuthenticationRequest;
-import ir.sobhan.restapi.response.AuthenticationResponse;
-import ir.sobhan.restapi.request.RegisterRequest;
-import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.auth.Token;
-import ir.sobhan.restapi.service.auth.JwtService;
-import ir.sobhan.restapi.dao.CustomUserRepository;
-import ir.sobhan.restapi.dao.TokenRepository;
+import ir.sobhan.restapi.auth.*;
+import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.individual.CustomUser;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import ir.sobhan.restapi.request.*;
+import ir.sobhan.restapi.response.AuthenticationResponse;
+import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 
 @Service
@@ -31,10 +26,8 @@ public class AuthenticationService {
 
     @Autowired
     public AuthenticationService(CustomUserRepository customUserRepository,
-                                 TokenRepository tokenRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+                                 TokenRepository tokenRepository, PasswordEncoder passwordEncoder,
+                                 JwtService jwtService, AuthenticationManager authenticationManager) {
         this.customUserRepository = customUserRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
@@ -52,24 +45,25 @@ public class AuthenticationService {
                 .active(request.isActive())
                 .role(Role.CUSTOM_USER)
                 .build();
-        var savedCustomUser = customUserRepository.save(customUser);
+
+        customUserRepository.save(customUser);
 
         return "user successfully registered!";
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getUsername(), request.getPassword()));
+
         var user = customUserRepository.findByUsername(request.getUsername())
                 .orElseThrow();
+
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -88,19 +82,21 @@ public class AuthenticationService {
     }
 
     private void revokeAllUserTokens(CustomUser customUser) {
+
         var validUserTokens = tokenRepository.findAllValidTokenByUser(customUser.getId());
+
         if (validUserTokens.isEmpty())
             return;
+
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
         });
+
         tokenRepository.saveAll(validUserTokens);
     }
 
-    public void refreshToken(
-            HttpServletRequest request,
-            HttpServletResponse response
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response
     ) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;

@@ -1,14 +1,10 @@
 package ir.sobhan.restapi.controller.coursesection;
 
-import ir.sobhan.restapi.dao.CourseRepository;
 import ir.sobhan.restapi.model.coursesection.Course;
-import ir.sobhan.restapi.model.coursesection.Term;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,26 +21,22 @@ public class CourseController {
 
     @GetMapping("all-courses")
     public ResponseEntity<ListResponse<Course>> showAllCourses() {
-
         return ResponseEntity.ok(courseService.getAllCourses());
     }
     @GetMapping("all-courses/{title}")
     public ResponseEntity<Optional<Course>> showTermByTitle(@PathVariable String title) {
-
         return ResponseEntity.ok(courseService.getCourseByTitle(title));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/course")
     public ResponseEntity<String> createCourse(@RequestBody Course course) {
-
         return ResponseEntity.ok(courseService.buildCourse(course));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/course")
     public ResponseEntity<String> updateCourse(@RequestBody Course course) {
-
         return ResponseEntity.ok(courseService.buildCourse(course));
     }
 
