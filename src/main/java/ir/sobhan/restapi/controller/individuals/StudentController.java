@@ -32,7 +32,8 @@ public class StudentController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/student")
-    public ResponseEntity<String> authorizeStudent(@RequestParam String username, @RequestBody Student student) {
+    public ResponseEntity<String> authorizeStudent(
+            @RequestParam String username, @RequestBody Student student) {
 
         Map<String, HttpStatus> statusMap = new HashMap<>(
                 Map.of("Invalid username!", HttpStatus.BAD_REQUEST,

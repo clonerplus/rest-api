@@ -25,7 +25,8 @@ public class CourseSectionController {
     }
 
     @GetMapping("all-course-sections/{termTitle}")
-    public ResponseEntity<ListResponse<CourseSection>> showAllTerms(@PathVariable String termTitle) {
+    public ResponseEntity<ListResponse<CourseSection>> showAllTerms(
+            @PathVariable String termTitle) {
 
         var termCourseSections = courseSectionService.getAllTerms(termTitle);
 
@@ -34,7 +35,8 @@ public class CourseSectionController {
                 .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
     @GetMapping("all-course-sections-and-students/{termTitle}")
-    public ResponseEntity<ListResponse<CourseSection>> showTermByTitle(@PathVariable String termTitle) {
+    public ResponseEntity<ListResponse<CourseSection>> showTermByTitle(
+            @PathVariable String termTitle) {
 
         var termCourseSections = courseSectionService.getAllTermsAndStudentsCount(termTitle);
 
@@ -70,7 +72,8 @@ public class CourseSectionController {
                 Map.of("course section not found!", HttpStatus.NOT_FOUND,
                         "updated scores successfully!", HttpStatus.OK));
 
-        String resultMsg = courseSectionService.setStudentsScore(courseSectionId, setStudentsScoreRequest);
+        String resultMsg = courseSectionService.setStudentsScore(
+                courseSectionId, setStudentsScoreRequest);
 
         return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
     }
@@ -102,7 +105,8 @@ public class CourseSectionController {
                 Map.of("user not authorized to delete this course section", HttpStatus.BAD_REQUEST,
                         "successfully deleted term!", HttpStatus.OK));
 
-        String resultMsg = courseSectionService.deleteCourseSection(courseSectionRequest, authentication);
+        String resultMsg = courseSectionService.deleteCourseSection(
+                courseSectionRequest, authentication);
 
         return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
     }

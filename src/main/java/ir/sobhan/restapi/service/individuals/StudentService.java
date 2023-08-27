@@ -5,6 +5,7 @@ import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
 import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StudentRepository;
+import ir.sobhan.restapi.model.coursesection.CourseSection;
 import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Student;
@@ -46,66 +47,118 @@ public class StudentService {
                 .build();
     }
 
+    private void saveStudentRecordToDatabase(
+            Student student, CustomUser customUser) {
+
+        student.setCustomUser(customUser);
+        customUser.setStudent(student);
+        customUser.setRole(Role.STUDENT);
+        studentRepository.save(student);
+    }
+
     public String authorizeStudent(String username, Student student) {
 
         if (username == null)
             return "Invalid username!";
 
-        Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
+        return customUserRepository.findByUsername(username)
+                .map(customUser -> {
+                    saveStudentRecordToDatabase(student, customUser);
+                    return "Authorized user to student limits successfully";
+                })
+                .orElse("username not found!");
+    }
 
-        if (customUser.isEmpty())
-            return "username not found!";
+    private Optional<CourseSection> findCourseSection(CourseSectionRequest courseSectionRequest) {
 
-        student.setCustomUser(customUser.get());
-        customUser.get().setStudent(student);
-        customUser.get().setRole(Role.STUDENT);
+        return courseSectionRepository.findByTermTitleAndCourseTitle(
+                courseSectionRequest.getTermTitle(),
+                courseSectionRequest.getCourseTitle());
+    }
+
+    private CourseSectionRegistration buildCourseSectionRegistration(
+            Student student, CourseSection courseSection) {
+
+        return CourseSectionRegistration.builder()
+                .courseSection(courseSection)
+                .student(student)
+                .build();
+    }
+
+    private List<CourseSectionRegistration> setStudentCourseSectionRegistrationList(
+            Student student, CourseSectionRegistration courseSectionRegistration) {
+
+        student.getCourseSectionRegistration().add(courseSectionRegistration);
+        return student.getCourseSectionRegistration();
+    }
+
+    private List<CourseSectionRegistration> setCourseSectionCourseSectionRegistrationList(
+            CourseSection courseSection, CourseSectionRegistration courseSectionRegistration) {
+
+        courseSection.getCourseSectionRegistration().add(courseSectionRegistration);
+        return courseSection.getCourseSectionRegistration();
+    }
+
+    private void saveCourseSectionRecordsToDatabase(CourseSection courseSection,
+            CourseSectionRegistration courseSectionRegistration, Student student) {
+
+        courseSectionRegistrationRepository.save(courseSectionRegistration);
         studentRepository.save(student);
+        courseSectionRepository.save(courseSection);
+    }
 
-        return "Authorized user to student limits successfully";
+    private CourseSection fetchCourseSection(
+            CourseSectionRequest courseSectionRequest) throws Exception {
+
+        return findCourseSection(courseSectionRequest)
+                .orElseThrow(() -> new Exception("Invalid term title or course title!"));
+    }
+
+    private Student fetchStudent(String studentName) throws Exception {
+
+        if (studentName == null)
+            throw new NullPointerException("Invalid student name");
+
+        return studentRepository.findByCustomUserUsername(studentName)
+                .orElseThrow(() -> new Exception("Student not found!"));
     }
 
     public String joinCourseSection(
             CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
-        var courseSection = courseSectionRepository.findByTermTitleAndCourseTitle(
-                courseSectionRequest.getTermTitle(),
-                courseSectionRequest.getCourseTitle());
+        try {
 
-        if (courseSection.isEmpty())
-            return "Invalid term title or course title!";
+            var courseSection = fetchCourseSection(courseSectionRequest);
+            var student = fetchStudent(authentication.getName());
 
+            var courseSectionRegistration = buildCourseSectionRegistration(student, courseSection);
 
-        var student = studentRepository.findByCustomUserUsername(authentication.getName());
+            var courseSectionRegistrationList = setStudentCourseSectionRegistrationList(
+                    student, courseSectionRegistration
+            );
 
-        CourseSectionRegistration courseSectionRegistration =
-                CourseSectionRegistration.builder()
-                        .courseSection(courseSection.get())
-                        .student(student.get())
-                        .build();
+            student.setCourseSectionRegistration(courseSectionRegistrationList);
 
-        var courseSectionRegistrationList = student.get().getCourseSectionRegistration();
-        courseSectionRegistrationList.add(courseSectionRegistration);
-        student.get().setCourseSectionRegistration(courseSectionRegistrationList);
+            courseSectionRegistrationList = setCourseSectionCourseSectionRegistrationList(
+                    courseSection, courseSectionRegistration
+            );
+            courseSection.setCourseSectionRegistration(courseSectionRegistrationList);
 
-        courseSectionRegistrationList = courseSection.get().getCourseSectionRegistration();
-        courseSectionRegistrationList.add(courseSectionRegistration);
-        courseSection.get().setCourseSectionRegistration(courseSectionRegistrationList);
+            saveCourseSectionRecordsToDatabase(courseSection, courseSectionRegistration,
+                    student);
 
-        courseSectionRegistrationRepository.save(courseSectionRegistration);
-        studentRepository.save(student.get());
-        courseSectionRepository.save(courseSection.get());
+            return "joined to course section successfully!";
 
-        return "joined to course section successfully!";
+        } catch (Exception e) {
+
+            return e.getMessage();
+        }
     }
 
-    public GetStudentScoreResponse fetchTermScores(
-            long termId, Authentication authentication) {
+    private Map<String, Double> fetchCourseScores(Student student, long termId) {
 
-        var student = studentRepository.findByCustomUserUsername(authentication.getName());
-
-
-        Map<String, Double> courseScores = student.get().getCourseSectionRegistration().stream()
+        return student.getCourseSectionRegistration().stream()
                 .filter(courseSectionRegistration ->
                         courseSectionRegistration.getCourseSection().getTerm().getId() == termId)
                 .collect(Collectors.toMap(
@@ -113,16 +166,33 @@ public class StudentService {
                                 courseSectionRegistration.getCourseSection().getCourse().getTitle(),
                         CourseSectionRegistration::getScore
                 ));
+    }
 
-        double termAverageScore = courseScores.values().stream()
+    private double calculateStudentTermAverageScore(Map<String, Double> courseScores) {
+
+        return courseScores.values().stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.averagingDouble(Double::doubleValue));
+    }
+    public GetStudentScoreResponse fetchTermScores(
+            long termId, Authentication authentication) {
+        try {
 
+            var student = fetchStudent(authentication.getName());
 
-        return GetStudentScoreResponse.builder()
-                .scores(courseScores)
-                .average(termAverageScore)
-                .build();
+            var courseScores = fetchCourseScores(student, termId);
+
+            double termAverageScore = calculateStudentTermAverageScore(courseScores);
+
+            return GetStudentScoreResponse.builder()
+                    .scores(courseScores)
+                    .average(termAverageScore)
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

@@ -12,7 +12,8 @@ public class CustomUserController {
     private final CustomUserService customUserService;
 
     @Autowired
-    public CustomUserController(CustomUserService customUserService) {
+    public CustomUserController(
+            CustomUserService customUserService) {
         this.customUserService = customUserService;
     }
 
