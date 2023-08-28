@@ -6,6 +6,7 @@ import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StaffRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Staff;
+import ir.sobhan.restapi.request.individuals.auth.StaffRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class StaffService {
                 .build();
     }
 
-    public void authorizeStaff(String username, Staff staff) {
+    public void authorizeStaff(String username, StaffRequest staffRequest) {
 
         if (username == null)
             throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);
@@ -38,7 +39,11 @@ public class StaffService {
         CustomUser customUser = customUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ApiRequestException("username not found!", HttpStatus.NOT_FOUND));
 
-        staff.setCustomUser(customUser);
+        var staff = Staff.builder()
+                .customUser(customUser)
+                .personnelId(staffRequest.getPersonnelId())
+                .build();
+
         customUser.setStaff(staff);
         customUser.setRole(Role.STAFF);
         staffRepository.save(staff);

@@ -10,12 +10,11 @@ import ir.sobhan.restapi.model.coursesection.CourseSection;
 import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Student;
-import ir.sobhan.restapi.request.CourseSectionRequest;
+import ir.sobhan.restapi.request.coursesection.CourseSectionRequest;
 import ir.sobhan.restapi.response.GetStudentScoreResponse;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 

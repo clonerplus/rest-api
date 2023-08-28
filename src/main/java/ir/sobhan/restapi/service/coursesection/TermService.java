@@ -3,6 +3,7 @@ package ir.sobhan.restapi.service.coursesection;
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.TermRepository;
 import ir.sobhan.restapi.model.coursesection.Term;
+import ir.sobhan.restapi.request.coursesection.TermRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class TermService {
         this.termRepository = termRepository;
     }
 
-    public void buildTerm(@NotNull Term termRequest) {
+    public void buildTerm(@NotNull TermRequest termRequest) {
         termRepository.findByTitle(termRequest.getTitle())
                 .ifPresent(existingCourse -> {
                     throw new ApiRequestException("Term already exists!\n" +

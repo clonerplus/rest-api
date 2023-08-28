@@ -2,6 +2,7 @@ package ir.sobhan.restapi.controller.coursesection;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.coursesection.Term;
+import ir.sobhan.restapi.request.coursesection.TermRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.TermService;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,9 @@ public class TermController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/term")
-    public ResponseEntity<String> createTerm(@RequestBody Term term) {
+    public ResponseEntity<String> createTerm(@RequestBody TermRequest termRequest) {
         try {
-            termService.buildTerm(term);
+            termService.buildTerm(termRequest);
 
             return ResponseEntity.ok("term created successfully!");
 
@@ -41,9 +42,9 @@ public class TermController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/term")
-    public ResponseEntity<String> updateTerm(@RequestBody Term term) {
+    public ResponseEntity<String> updateTerm(@RequestBody TermRequest termRequest) {
         try {
-            termService.buildTerm(term);
+            termService.buildTerm(termRequest);
 
             return ResponseEntity.ok("term updated successfully!");
 

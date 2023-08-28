@@ -2,6 +2,7 @@ package ir.sobhan.restapi.controller.individuals;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.individual.*;
+import ir.sobhan.restapi.request.individuals.auth.StaffRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.individuals.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ public class StaffController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/staff")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
-                                                      @RequestBody Staff staff) {
+                                                      @RequestBody StaffRequest staffRequest) {
         try {
-            staffService.authorizeStaff(username, staff);
+            staffService.authorizeStaff(username, staffRequest);
 
             return ResponseEntity.ok("Authorized user to staff limits successfully");
 

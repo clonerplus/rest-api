@@ -2,7 +2,7 @@ package ir.sobhan.restapi.controller.individuals;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.individual.Student;
-import ir.sobhan.restapi.request.CourseSectionRequest;
+import ir.sobhan.restapi.request.coursesection.CourseSectionRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.individuals.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,6 +6,7 @@ import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.InstructorRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Instructor;
+import ir.sobhan.restapi.request.individuals.auth.InstructorRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,14 +32,18 @@ public class InstructorService {
 
     }
 
-    public void authorizeInstructor(String username, Instructor instructor) {
+    public void authorizeInstructor(String username, InstructorRequest instructorRequest) {
         if (username == null)
             throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);
 
         CustomUser customUser = customUserRepository.findByUsername(username)
                 .orElseThrow(() -> new ApiRequestException("username not found!", HttpStatus.NOT_FOUND));
 
-        instructor.setCustomUser(customUser);
+        var instructor = Instructor.builder()
+                .rank(instructorRequest.getRank())
+                .customUser(customUser)
+                .build();
+
         customUser.setInstructor(instructor);
         customUser.setRole(Role.INSTRUCTOR);
         instructorRepository.save(instructor);

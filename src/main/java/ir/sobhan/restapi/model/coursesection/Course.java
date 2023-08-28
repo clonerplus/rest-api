@@ -18,5 +18,4 @@ public class Course {
     private int units;
     @OneToMany(mappedBy = "course")
     private List<CourseSection> courseSection;
-
 }

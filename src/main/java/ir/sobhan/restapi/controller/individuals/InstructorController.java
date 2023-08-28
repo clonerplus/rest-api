@@ -2,6 +2,7 @@ package ir.sobhan.restapi.controller.individuals;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.individual.Instructor;
+import ir.sobhan.restapi.request.individuals.auth.InstructorRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.individuals.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,9 @@ public class InstructorController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/instructor")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
-                                                      @RequestBody Instructor instructor) {
+                                                      @RequestBody InstructorRequest instructorRequest) {
         try {
-            instructorService.authorizeInstructor(username, instructor);
+            instructorService.authorizeInstructor(username, instructorRequest);
 
             return ResponseEntity.ok("Authorized user to instructor limits successfully");
 

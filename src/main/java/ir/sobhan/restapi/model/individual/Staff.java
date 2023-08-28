@@ -6,6 +6,7 @@ import lombok.*;
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Staff {
@@ -16,5 +17,4 @@ public class Staff {
     @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     private CustomUser customUser;
-
 }

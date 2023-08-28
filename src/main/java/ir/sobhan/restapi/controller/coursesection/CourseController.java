@@ -2,6 +2,7 @@ package ir.sobhan.restapi.controller.coursesection;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.coursesection.Course;
+import ir.sobhan.restapi.request.coursesection.CourseRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ public class CourseController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/course")
-    public ResponseEntity<String> createCourse(@RequestBody Course course) {
+    public ResponseEntity<String> createCourse(@RequestBody CourseRequest courseRequest) {
         try {
-            courseService.buildCourse(course);
+            courseService.buildCourse(courseRequest);
 
             return ResponseEntity.ok("course created successfully!");
 
@@ -44,9 +45,9 @@ public class CourseController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/course")
-    public ResponseEntity<String> updateCourse(@RequestBody Course course) {
+    public ResponseEntity<String> updateCourse(@RequestBody CourseRequest courseRequest) {
         try {
-            courseService.buildCourse(course);
+            courseService.buildCourse(courseRequest);
 
             return ResponseEntity.ok("course updated successfully!");
 

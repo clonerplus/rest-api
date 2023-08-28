@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.request;
+package ir.sobhan.restapi.request.coursesection;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

@@ -1,8 +1,8 @@
 package ir.sobhan.restapi.controller.auth;
 
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
-import ir.sobhan.restapi.request.AuthenticationRequest;
-import ir.sobhan.restapi.request.RegisterRequest;
+import ir.sobhan.restapi.request.individuals.auth.AuthenticationRequest;
+import ir.sobhan.restapi.request.individuals.auth.RegisterRequest;
 import ir.sobhan.restapi.service.auth.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.request;
+package ir.sobhan.restapi.request.coursesection;
 
 import lombok.*;
 

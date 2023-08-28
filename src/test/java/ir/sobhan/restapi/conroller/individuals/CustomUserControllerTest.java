@@ -2,7 +2,7 @@ package ir.sobhan.restapi.conroller.individuals;
 
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.request.RegisterRequest;
+import ir.sobhan.restapi.request.individuals.auth.RegisterRequest;
 import ir.sobhan.restapi.service.auth.AuthenticationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

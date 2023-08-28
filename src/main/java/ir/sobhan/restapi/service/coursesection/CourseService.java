@@ -3,6 +3,7 @@ package ir.sobhan.restapi.service.coursesection;
 import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseRepository;
 import ir.sobhan.restapi.model.coursesection.Course;
+import ir.sobhan.restapi.request.coursesection.CourseRequest;
 import ir.sobhan.restapi.response.ListResponse;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class CourseService {
     private final CourseRepository courseRepository;
 
-    public void buildCourse(@NotNull Course courseRequest) {
+    public void buildCourse(@NotNull CourseRequest courseRequest) {
 
         courseRepository.findByTitle(courseRequest.getTitle())
                 .ifPresent(existingCourse -> {
