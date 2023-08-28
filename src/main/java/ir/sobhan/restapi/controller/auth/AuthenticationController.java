@@ -1,12 +1,16 @@
 package ir.sobhan.restapi.controller.auth;
 
-import ir.sobhan.restapi.request.*;
-import ir.sobhan.restapi.response.AuthenticationResponse;
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.request.AuthenticationRequest;
+import ir.sobhan.restapi.request.RegisterRequest;
 import ir.sobhan.restapi.service.auth.AuthenticationService;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
@@ -18,12 +22,25 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        try {
+            authenticationService.register(request);
+
+            return ResponseEntity.ok("user successfully registered!");
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request) {
+        try {
+            var authenticationResponse = authenticationService.authenticate(request);
+
+            return ResponseEntity.ok(String.valueOf(authenticationResponse));
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PostMapping("/refresh-token")

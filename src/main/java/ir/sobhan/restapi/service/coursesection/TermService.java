@@ -1,10 +1,12 @@
 package ir.sobhan.restapi.service.coursesection;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.TermRepository;
 import ir.sobhan.restapi.model.coursesection.Term;
 import ir.sobhan.restapi.response.ListResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,7 +21,12 @@ public class TermService {
         this.termRepository = termRepository;
     }
 
-    public String buildTerm(@NotNull Term termRequest) {
+    public void buildTerm(@NotNull Term termRequest) {
+        termRepository.findByTitle(termRequest.getTitle())
+                .ifPresent(existingCourse -> {
+                    throw new ApiRequestException("Term already exists!\n" +
+                            "Please consider updating the term for your use", HttpStatus.BAD_REQUEST);
+                });
         var term = Term.builder()
                 .title(termRequest.getTitle())
                 .open(termRequest.isOpen())
@@ -27,8 +34,6 @@ public class TermService {
                 .build();
 
         termRepository.save(term);
-
-        return "Term created successfully!";
     }
 
     public Optional<Term> getTermByTitle(@NotNull String title) {
@@ -45,11 +50,8 @@ public class TermService {
                 .build();
     }
 
-    public String deleteTerm(@NotNull String title) {
-
+    public void deleteTerm(@NotNull String title) {
         termRepository.deleteTermByTitle(title);
-
-        return "successfully deleted term!";
     }
 
 }

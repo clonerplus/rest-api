@@ -1,18 +1,15 @@
 package ir.sobhan.restapi.controller.coursesection;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.coursesection.CourseSection;
-import ir.sobhan.restapi.request.CourseSectionRequest;
-import ir.sobhan.restapi.request.SetStudentsScoreRequest;
+import ir.sobhan.restapi.request.*;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
 
 @RestController
 public class CourseSectionController {
@@ -49,15 +46,13 @@ public class CourseSectionController {
             @RequestBody CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
-        Map<String, HttpStatus> statusMap = new HashMap<>(
-                Map.of("Term not found!", HttpStatus.NOT_FOUND,
-                "Course not found!", HttpStatus.NOT_FOUND,
-                        "courseSection created successfully!", HttpStatus.OK));
+        try {
+            courseSectionService.buildCourseSection(courseSectionRequest, authentication.getName());
+            return ResponseEntity.ok("courseSection created successfully!");
 
-        String resultMsg = courseSectionService
-                .buildCourseSection(courseSectionRequest, authentication.getName());
-
-        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasRole('INSTRUCTOR')")
@@ -65,14 +60,15 @@ public class CourseSectionController {
     public ResponseEntity<String> setStudentsScores(@PathVariable long courseSectionId,
             @RequestBody SetStudentsScoreRequest setStudentsScoreRequest) {
 
-        Map<String, HttpStatus> statusMap = new HashMap<>(
-                Map.of("course section not found!", HttpStatus.NOT_FOUND,
-                        "updated scores successfully!", HttpStatus.OK));
+        try {
+            courseSectionService.setStudentsScore(
+                    courseSectionId, setStudentsScoreRequest);
 
-        String resultMsg = courseSectionService.setStudentsScore(
-                courseSectionId, setStudentsScoreRequest);
+            return ResponseEntity.ok("updated scores successfully!");
 
-        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -81,15 +77,13 @@ public class CourseSectionController {
             @RequestBody CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
-        Map<String, HttpStatus> statusMap = new HashMap<>(
-                Map.of("Term not found!", HttpStatus.NOT_FOUND,
-                        "Course not found!", HttpStatus.NOT_FOUND,
-                        "courseSection created successfully!", HttpStatus.OK));
+        try {
+            courseSectionService.buildCourseSection(courseSectionRequest, authentication.getName());
+            return ResponseEntity.ok("courseSection created successfully!");
 
-        String resultMsg = courseSectionService
-                .buildCourseSection(courseSectionRequest, authentication.getName());
-
-        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -97,13 +91,12 @@ public class CourseSectionController {
     public ResponseEntity<String> deleteTerm(@RequestBody CourseSectionRequest courseSectionRequest,
             Authentication authentication) {
 
-        Map<String, HttpStatus> statusMap = new HashMap<>(
-                Map.of("user not authorized to delete this course section", HttpStatus.BAD_REQUEST,
-                        "successfully deleted term!", HttpStatus.OK));
+        try {
+            courseSectionService.deleteCourseSection(courseSectionRequest, authentication);
+            return ResponseEntity.ok("successfully deleted term!");
 
-        String resultMsg = courseSectionService.deleteCourseSection(
-                courseSectionRequest, authentication);
-
-        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 }

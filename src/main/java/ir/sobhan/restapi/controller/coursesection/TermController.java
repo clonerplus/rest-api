@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.controller.coursesection;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.coursesection.Term;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.TermService;
@@ -28,13 +29,27 @@ public class TermController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/term")
     public ResponseEntity<String> createTerm(@RequestBody Term term) {
-        return ResponseEntity.ok(termService.buildTerm(term));
+        try {
+            termService.buildTerm(term);
+
+            return ResponseEntity.ok("term created successfully!");
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/term")
     public ResponseEntity<String> updateTerm(@RequestBody Term term) {
-        return ResponseEntity.ok(termService.buildTerm(term));
+        try {
+            termService.buildTerm(term);
+
+            return ResponseEntity.ok("term updated successfully!");
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -49,6 +64,7 @@ public class TermController {
         if (term.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("term not found!");
 
-        return ResponseEntity.ok(termService.deleteTerm(title));
+        termService.deleteTerm(title);
+        return ResponseEntity.ok("successfully deleted term!");
     }
 }

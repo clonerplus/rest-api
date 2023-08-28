@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.controller.coursesection;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.coursesection.Course;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseService;
@@ -31,13 +32,27 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/course")
     public ResponseEntity<String> createCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.buildCourse(course));
+        try {
+            courseService.buildCourse(course);
+
+            return ResponseEntity.ok("course created successfully!");
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/course")
     public ResponseEntity<String> updateCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.buildCourse(course));
+        try {
+            courseService.buildCourse(course);
+
+            return ResponseEntity.ok("course updated successfully!");
+
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -52,6 +67,7 @@ public class CourseController {
         if (course.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("course not found!");
 
-        return ResponseEntity.ok(courseService.deleteTerm(title));
+        courseService.deleteTerm(title);
+        return ResponseEntity.ok("successfully deleted course!");
     }
 }

@@ -1,12 +1,14 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StaffRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Staff;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -28,21 +30,17 @@ public class StaffService {
                 .build();
     }
 
-    public String authorizeStaff(String username, Staff staff) {
+    public void authorizeStaff(String username, Staff staff) {
 
         if (username == null)
-            return "Invalid username!";
+            throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);
 
-        Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
+        CustomUser customUser = customUserRepository.findByUsername(username)
+                .orElseThrow(() -> new ApiRequestException("username not found!", HttpStatus.NOT_FOUND));
 
-        if (customUser.isEmpty())
-            return "username not found!";
-
-        staff.setCustomUser(customUser.get());
-        customUser.get().setStaff(staff);
-        customUser.get().setRole(Role.STAFF);
+        staff.setCustomUser(customUser);
+        customUser.setStaff(staff);
+        customUser.setRole(Role.STAFF);
         staffRepository.save(staff);
-
-        return "Authorized user to staff limits successfully";
     }
 }

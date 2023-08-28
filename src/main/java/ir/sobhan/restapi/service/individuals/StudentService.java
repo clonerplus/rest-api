@@ -1,6 +1,7 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
 import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.CustomUserRepository;
@@ -56,17 +57,15 @@ public class StudentService {
         studentRepository.save(student);
     }
 
-    public String authorizeStudent(String username, Student student) {
+    public void authorizeStudent(String username, Student student) {
 
         if (username == null)
-            return "Invalid username!";
+            throw new ApiRequestException("Invalid username!", HttpStatus.NOT_FOUND);
 
-        return customUserRepository.findByUsername(username)
-                .map(customUser -> {
-                    saveStudentRecordToDatabase(student, customUser);
-                    return "Authorized user to student limits successfully";
-                })
-                .orElse("username not found!");
+        CustomUser customUser = customUserRepository.findByUsername(username)
+                .orElseThrow(() -> new ApiRequestException("username not found!", HttpStatus.NOT_FOUND));
+
+        saveStudentRecordToDatabase(student, customUser);
     }
 
     private Optional<CourseSection> findCourseSection(CourseSectionRequest courseSectionRequest) {
@@ -108,52 +107,39 @@ public class StudentService {
     }
 
     private CourseSection fetchCourseSection(
-            CourseSectionRequest courseSectionRequest) throws Exception {
+            CourseSectionRequest courseSectionRequest) {
 
         return findCourseSection(courseSectionRequest)
-                .orElseThrow(() -> new Exception("Invalid term title or course title!"));
+                .orElseThrow(() -> new ApiRequestException("Invalid term title or course title!",
+                        HttpStatus.NOT_FOUND));
     }
 
-    private Student fetchStudent(String studentName) throws Exception {
+    private Student fetchStudent(String studentName) {
 
         if (studentName == null)
-            throw new NullPointerException("Invalid student name");
+            throw new ApiRequestException("Invalid student name", HttpStatus.BAD_REQUEST);
 
         return studentRepository.findByCustomUserUsername(studentName)
-                .orElseThrow(() -> new Exception("Student not found!"));
+                .orElseThrow(() -> new ApiRequestException("Student not found!", HttpStatus.NOT_FOUND));
     }
 
-    public String joinCourseSection(
-            CourseSectionRequest courseSectionRequest,
-            Authentication authentication) {
+    public void joinCourseSection(CourseSectionRequest courseSectionRequest, Authentication authentication) {
 
-        try {
+        var courseSection = fetchCourseSection(courseSectionRequest);
+        var student = fetchStudent(authentication.getName());
 
-            var courseSection = fetchCourseSection(courseSectionRequest);
-            var student = fetchStudent(authentication.getName());
+        var courseSectionRegistration = buildCourseSectionRegistration(student, courseSection);
 
-            var courseSectionRegistration = buildCourseSectionRegistration(student, courseSection);
+        var courseSectionRegistrationList = setStudentCourseSectionRegistrationList(student,
+                courseSectionRegistration);
 
-            var courseSectionRegistrationList = setStudentCourseSectionRegistrationList(
-                    student, courseSectionRegistration
-            );
+        student.setCourseSectionRegistration(courseSectionRegistrationList);
 
-            student.setCourseSectionRegistration(courseSectionRegistrationList);
+        courseSectionRegistrationList = setCourseSectionCourseSectionRegistrationList(courseSection,
+                courseSectionRegistration);
+        courseSection.setCourseSectionRegistration(courseSectionRegistrationList);
 
-            courseSectionRegistrationList = setCourseSectionCourseSectionRegistrationList(
-                    courseSection, courseSectionRegistration
-            );
-            courseSection.setCourseSectionRegistration(courseSectionRegistrationList);
-
-            saveCourseSectionRecordsToDatabase(courseSection, courseSectionRegistration,
-                    student);
-
-            return "joined to course section successfully!";
-
-        } catch (Exception e) {
-
-            return e.getMessage();
-        }
+        saveCourseSectionRecordsToDatabase(courseSection, courseSectionRegistration, student);
     }
 
     private Map<String, Double> fetchCourseScores(Student student, long termId) {
@@ -174,25 +160,18 @@ public class StudentService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.averagingDouble(Double::doubleValue));
     }
-    public GetStudentScoreResponse fetchTermScores(
-            long termId, Authentication authentication) {
-        try {
+    public GetStudentScoreResponse fetchTermScores(long termId, Authentication authentication) {
 
-            var student = fetchStudent(authentication.getName());
+        var student = fetchStudent(authentication.getName());
+        var courseScores = fetchCourseScores(student, termId);
 
-            var courseScores = fetchCourseScores(student, termId);
+        double termAverageScore = calculateStudentTermAverageScore(courseScores);
 
-            double termAverageScore = calculateStudentTermAverageScore(courseScores);
+        return GetStudentScoreResponse.builder()
+                .scores(courseScores)
+                .average(termAverageScore)
+                .build();
 
-            return GetStudentScoreResponse.builder()
-                    .scores(courseScores)
-                    .average(termAverageScore)
-                    .build();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 }

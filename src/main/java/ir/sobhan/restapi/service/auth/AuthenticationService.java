@@ -3,6 +3,7 @@ package ir.sobhan.restapi.service.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.sobhan.restapi.auth.*;
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.request.*;
@@ -10,6 +11,7 @@ import ir.sobhan.restapi.response.AuthenticationResponse;
 import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,11 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String register(RegisterRequest request) {
+    public void register(RegisterRequest request) {
+        if (customUserRepository.findByUsername(request.getUsername()).isPresent())
+            throw new ApiRequestException("user with this username already exists!",
+                    HttpStatus.NOT_FOUND);
+
         var customUser = CustomUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -48,8 +54,6 @@ public class AuthenticationService {
                 .build();
 
         customUserRepository.save(customUser);
-
-        return "user successfully registered!";
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -58,7 +62,8 @@ public class AuthenticationService {
                 request.getUsername(), request.getPassword()));
 
         var user = customUserRepository.findByUsername(request.getUsername())
-                .orElseThrow();
+                .orElseThrow(() -> new ApiRequestException("incorrect username or password!",
+                        HttpStatus.FORBIDDEN));
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);

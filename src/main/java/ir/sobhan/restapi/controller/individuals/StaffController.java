@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.controller.individuals;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.model.individual.*;
 import ir.sobhan.restapi.response.ListResponse;
 import ir.sobhan.restapi.service.individuals.StaffService;
@@ -29,14 +30,13 @@ public class StaffController {
     @PostMapping("/authorize/staff")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,
                                                       @RequestBody Staff staff) {
+        try {
+            staffService.authorizeStaff(username, staff);
 
-        Map<String, HttpStatus> statusMap = new HashMap<>(
-                Map.of("Invalid username!", HttpStatus.BAD_REQUEST,
-                        "username not found!", HttpStatus.NOT_FOUND,
-                        "Authorized user to staff limits successfully", HttpStatus.OK));
+            return ResponseEntity.ok("Authorized user to staff limits successfully");
 
-        String resultMsg = staffService.authorizeStaff(username, staff);
-
-        return ResponseEntity.status(statusMap.get(resultMsg)).body(resultMsg);
+        } catch (ApiRequestException e) {
+            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        }
     }
 }

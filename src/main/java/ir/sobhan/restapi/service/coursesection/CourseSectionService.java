@@ -1,5 +1,6 @@
 package ir.sobhan.restapi.service.coursesection;
 
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
 import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.InstructorRepository;
@@ -9,12 +10,11 @@ import ir.sobhan.restapi.request.CourseSectionRequest;
 import ir.sobhan.restapi.request.SetStudentsScoreRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseSectionService {
@@ -37,32 +37,28 @@ public class CourseSectionService {
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
     }
 
-    public String buildCourseSection(
-            @NotNull CourseSectionRequest courseSectionRequest,
-            String instructorName) {
-        var term = termService.getTermByTitle(courseSectionRequest.getTermTitle());
-        if (term.isEmpty()) {
-            return "Term not found!";
-        }
+    public void buildCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
+                                     String instructorName) {
+        var term = termService.getTermByTitle(courseSectionRequest.getTermTitle())
+                .orElseThrow(() -> new ApiRequestException("Term not found!", HttpStatus.NOT_FOUND));
 
-        var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle());
-        if (course.isEmpty()) {
-            return "Course not found!";
-        }
-        var instructor = instructorRepository.findByCustomUserUsername(instructorName);
+        var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle())
+                .orElseThrow(() -> new ApiRequestException("Course not found!", HttpStatus.NOT_FOUND));
+
+        var instructor = instructorRepository.findByCustomUserUsername(instructorName)
+                .orElseThrow(() -> new ApiRequestException("Course not found!", HttpStatus.NOT_FOUND));
+
         var courseSection = CourseSection.builder()
-                .instructor(instructor.get())
-                .term(term.get())
-                .course(course.get())
+                .instructor(instructor)
+                .term(term)
+                .course(course)
                 .build();
 
         courseSectionRepository.save(courseSection);
-
-        return "courseSection created successfully!";
     }
 
-    public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(
-            String termTitle, String courseTitle) {
+    public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(String termTitle,
+                                                                             String courseTitle) {
 
         return courseSectionRepository.findByTermTitleAndCourseTitle(termTitle, courseTitle);
     }
@@ -75,24 +71,26 @@ public class CourseSectionService {
         return courseSectionRepository.findAllByTermTitle(termTitle);
     }
 
-    public String deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
+    public void deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                                         Authentication authentication) {
 
-        if (!courseSectionRepository.findByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
-                courseSectionRequest.getCourseTitle()).get().getInstructor().getCustomUser().getUsername()
-                .equals(authentication.getName()))
-            return "user not authorized to delete this course section";
+        CourseSection courseSection = courseSectionRepository.findByTermTitleAndCourseTitle(
+                        courseSectionRequest.getTermTitle(), courseSectionRequest.getCourseTitle())
+                .orElseThrow(() -> new ApiRequestException("Course section not found",
+                        HttpStatus.NOT_FOUND));
 
-        courseSectionRepository.deleteByTermTitleAndCourseTitle(
-                courseSectionRequest.getTermTitle(),
+        if (!courseSection.getInstructor().getCustomUser().getUsername()
+                .equals(authentication.getName())) {
+            throw new ApiRequestException("User not authorized to delete this course section",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        courseSectionRepository.deleteByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
                 courseSectionRequest.getCourseTitle());
-
-        return "successfully deleted term!";
     }
 
     private void setStudentScore(List<CourseSectionRegistration> scores,
                                  String studentId, Double score) {
-
         scores.stream()
                 .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
                 .forEach(registration -> {
@@ -101,25 +99,16 @@ public class CourseSectionService {
                 });
     }
 
-    public String setStudentsScore(
-            long courseSectionId,
+    public void setStudentsScore(long courseSectionId,
             @NotNull SetStudentsScoreRequest setStudentsScoreRequest) {
 
-        Optional<CourseSection> courseSection = courseSectionRepository.findById(courseSectionId);
+        var courseSection = courseSectionRepository.findById(courseSectionId)
+                .orElseThrow(() -> new ApiRequestException("course section not found!",
+                        HttpStatus.NOT_FOUND));
 
-        if (courseSection.isEmpty())
-            return "course section not found!";
 
-        List<CourseSectionRegistration> courseSectionRegistrations = courseSection.get()
-                .getCourseSectionRegistration();
-
-        Map<String, Double> studentScores = setStudentsScoreRequest.getScores();
-
-        studentScores.forEach((studentId, score) -> setStudentScore(courseSectionRegistrations,
-                studentId, score));
-
-        return "updated scores successfully!";
-
+        setStudentsScoreRequest.getScores().forEach((studentId, score) ->
+                setStudentScore(courseSection.getCourseSectionRegistration(), studentId, score));
     }
 
 }

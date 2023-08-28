@@ -1,15 +1,15 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
+import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.InstructorRepository;
 import ir.sobhan.restapi.model.individual.CustomUser;
 import ir.sobhan.restapi.model.individual.Instructor;
 import ir.sobhan.restapi.response.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class InstructorService {
@@ -31,21 +31,16 @@ public class InstructorService {
 
     }
 
-    public String authorizeInstructor(String username, Instructor instructor) {
-
+    public void authorizeInstructor(String username, Instructor instructor) {
         if (username == null)
-            return "Invalid username!";
+            throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);
 
-        Optional<CustomUser> customUser = customUserRepository.findByUsername(username);
+        CustomUser customUser = customUserRepository.findByUsername(username)
+                .orElseThrow(() -> new ApiRequestException("username not found!", HttpStatus.NOT_FOUND));
 
-        if (customUser.isEmpty())
-            return "username not found!";
-
-        instructor.setCustomUser(customUser.get());
-        customUser.get().setInstructor(instructor);
-        customUser.get().setRole(Role.INSTRUCTOR);
+        instructor.setCustomUser(customUser);
+        customUser.setInstructor(instructor);
+        customUser.setRole(Role.INSTRUCTOR);
         instructorRepository.save(instructor);
-
-        return "Authorized user to instructor limits successfully";
     }
 }
