@@ -19,17 +19,18 @@ import java.io.IOException;
 @Service
 public class AuthenticationService {
     private final CustomUserRepository customUserRepository;
-    private final TokenRepository tokenRepository;
+    private final RedisTokenRepository redisTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
     public AuthenticationService(CustomUserRepository customUserRepository,
-                                 TokenRepository tokenRepository, PasswordEncoder passwordEncoder,
-                                 JwtService jwtService, AuthenticationManager authenticationManager) {
+                                  RedisTokenRepository redisTokenRepository,
+                                 PasswordEncoder passwordEncoder, JwtService jwtService,
+                                 AuthenticationManager authenticationManager) {
         this.customUserRepository = customUserRepository;
-        this.tokenRepository = tokenRepository;
+        this.redisTokenRepository = redisTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -71,29 +72,37 @@ public class AuthenticationService {
     }
 
     private void saveUserToken(CustomUser customUser, String jwtToken) {
-        var token = Token.builder()
-                .customUser(customUser)
-                .token(jwtToken)
-                .tokenType(Token.TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
+//        var token = Token.builder()
+//                .customUser(customUser)
+//                .token(jwtToken)
+//                .tokenType(Token.TokenType.BEARER)
+//                .expired(false)
+//                .revoked(false)
+//                .build();
+//        tokenRepository.save(token);
+        redisTokenRepository.saveToken(jwtToken, customUser.getUsername(), 3600000);
+        redisTokenRepository.saveToken(customUser.getUsername(), jwtToken, 3600000);
+
     }
 
     private void revokeAllUserTokens(CustomUser customUser) {
 
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(customUser.getId());
+        var lastToken = redisTokenRepository.getToken(customUser.getUsername());
 
-        if (validUserTokens.isEmpty())
-            return;
+        redisTokenRepository.deleteToken(lastToken.get());
+        redisTokenRepository.deleteToken(customUser.getUsername());
 
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-
-        tokenRepository.saveAll(validUserTokens);
+//        var validUserTokens = tokenRepository.findAllValidTokenByUser(customUser.getId());
+//
+//        if (validUserTokens.isEmpty())
+//            return;
+//
+//        validUserTokens.forEach(token -> {
+//            token.setExpired(true);
+//            token.setRevoked(true);
+//        });
+//
+//        tokenRepository.saveAll(validUserTokens);
     }
 
     public void refreshToken(HttpServletRequest request, HttpServletResponse response

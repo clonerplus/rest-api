@@ -29,8 +29,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests
+                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                                 .requestMatchers(
                                         new AntPathRequestMatcher("/register"),
                                         new AntPathRequestMatcher("/all-users"),
