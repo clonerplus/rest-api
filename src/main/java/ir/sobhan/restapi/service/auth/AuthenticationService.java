@@ -1,14 +1,13 @@
 package ir.sobhan.restapi.service.auth;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ir.sobhan.restapi.auth.*;
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.*;
-import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.request.individuals.auth.AuthenticationRequest;
-import ir.sobhan.restapi.request.individuals.auth.RegisterRequest;
-import ir.sobhan.restapi.response.AuthenticationResponse;
+import ir.sobhan.restapi.model.entity.individual.CustomUser;
+import ir.sobhan.restapi.model.input.auth.AuthenticationRequest;
+import ir.sobhan.restapi.model.input.individual.RegisterRequest;
+import ir.sobhan.restapi.model.output.AuthenticationResponse;
 import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,21 +25,25 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
     @Autowired
     public AuthenticationService(CustomUserRepository customUserRepository,
-                                  RedisTokenRepository redisTokenRepository,
+                                 RedisTokenRepository redisTokenRepository,
                                  PasswordEncoder passwordEncoder, JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager, ObjectMapper objectMapper) {
         this.customUserRepository = customUserRepository;
         this.redisTokenRepository = redisTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
     }
     public void register(RegisterRequest request) {
-        if (customUserRepository.findByUsername(request.getUsername()).isPresent())
-            throw new ApiRequestException("user with this username already exists!", HttpStatus.NOT_FOUND);
-
+        customUserRepository.findByUsername(request.getUsername())
+                .ifPresent(user -> {
+                    throw new ApiRequestException("User with this username already exists!",
+                            HttpStatus.BAD_REQUEST);
+                });
         var customUser = CustomUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -76,23 +79,24 @@ public class AuthenticationService {
         redisTokenRepository.saveToken(customUser.getUsername(), jwtToken, 3600000);
     }
     private void revokeAllUserTokens(CustomUser customUser) {
-        var lastToken = redisTokenRepository.getToken(customUser.getUsername());
-
-        redisTokenRepository.deleteToken(lastToken.get());
-        redisTokenRepository.deleteToken(customUser.getUsername());
+        redisTokenRepository.getToken(customUser.getUsername())
+                .ifPresent(token -> {
+                    redisTokenRepository.deleteToken(token);
+                    redisTokenRepository.deleteToken(customUser.getUsername());
+                });
     }
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return;
+            throw new ApiRequestException("invalid token", HttpStatus.FORBIDDEN);
         }
         refreshToken = authHeader.substring(7);
         username = jwtService.extractUsername(refreshToken);
         if (username != null) {
             var customUser = this.customUserRepository.findByUsername(username)
-                    .orElseThrow();
+                    .orElseThrow(() -> new ApiRequestException("invalid token", HttpStatus.FORBIDDEN));
             if (jwtService.isTokenValid(refreshToken, customUser)) {
                 var accessToken = jwtService.generateToken(customUser);
                 revokeAllUserTokens(customUser);
@@ -101,7 +105,7 @@ public class AuthenticationService {
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
                         .build();
-                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+                objectMapper.writeValue(response.getOutputStream(), authResponse);
             }
         }
     }

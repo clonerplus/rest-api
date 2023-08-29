@@ -1,6 +1,6 @@
-package ir.sobhan.restapi.request.coursesection;
+package ir.sobhan.restapi.model.input.coursesection;
 
-import ir.sobhan.restapi.model.coursesection.CourseSection;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

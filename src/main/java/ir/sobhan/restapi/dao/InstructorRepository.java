@@ -1,6 +1,6 @@
 package ir.sobhan.restapi.dao;
 
-import ir.sobhan.restapi.model.individual.Instructor;
+import ir.sobhan.restapi.model.entity.individual.Instructor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

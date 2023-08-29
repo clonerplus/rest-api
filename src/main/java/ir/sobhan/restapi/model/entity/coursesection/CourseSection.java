@@ -1,5 +1,5 @@
-package ir.sobhan.restapi.model.coursesection;
-import ir.sobhan.restapi.model.individual.Instructor;
+package ir.sobhan.restapi.model.entity.coursesection;
+import ir.sobhan.restapi.model.entity.individual.Instructor;
 import jakarta.persistence.*;
 import lombok.*;
 

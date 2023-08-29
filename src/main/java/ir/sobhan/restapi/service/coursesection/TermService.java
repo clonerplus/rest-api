@@ -1,10 +1,10 @@
 package ir.sobhan.restapi.service.coursesection;
 
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.TermRepository;
-import ir.sobhan.restapi.model.coursesection.Term;
-import ir.sobhan.restapi.request.coursesection.TermRequest;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.model.entity.coursesection.Term;
+import ir.sobhan.restapi.model.input.coursesection.TermRequest;
+import ir.sobhan.restapi.model.output.ListResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +33,12 @@ public class TermService {
 
         termRepository.save(term);
     }
-    public Optional<Term> getTermByTitle(@NotNull String title) {
-        return termRepository.findByTitle(title);
+    public Term getTermByTitle(String title) {
+        if (title == null) {
+            throw new ApiRequestException("Invalid term title", HttpStatus.BAD_REQUEST);
+        }
+        return termRepository.findByTitle(title)
+                .orElseThrow(() -> new ApiRequestException("term not found!", HttpStatus.NOT_FOUND));
     }
     public Optional<Term> getTermById(long id) {
         return termRepository.findById(id);

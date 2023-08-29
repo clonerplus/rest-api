@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.request.individuals.auth;
+package ir.sobhan.restapi.model.input.individual;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package ir.sobhan.restapi.dao;
 
-import ir.sobhan.restapi.model.coursesection.Course;
+import ir.sobhan.restapi.model.entity.coursesection.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -3,7 +3,7 @@ package ir.sobhan.restapi.service.individuals;
 import ir.sobhan.restapi.auth.Role;
 import ir.sobhan.restapi.config.AdminConfig;
 import ir.sobhan.restapi.dao.CustomUserRepository;
-import ir.sobhan.restapi.model.individual.CustomUser;
+import ir.sobhan.restapi.model.entity.individual.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,8 @@ public class AdminService {
         AdminService.passwordEncoder = passwordEncoder;
     }
     public static void createAdmin() {
-        String username = adminConfig.getAdminUsername();
-        String password = adminConfig.getAdminPassword();
+        String username = adminConfig.getUsername();
+        String password = adminConfig.getPassword();
 
         // Hash the password
         String hashedPassword = passwordEncoder.encode(password);

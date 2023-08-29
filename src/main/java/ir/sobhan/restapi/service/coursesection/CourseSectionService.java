@@ -1,13 +1,13 @@
 package ir.sobhan.restapi.service.coursesection;
 
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
 import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.InstructorRepository;
-import ir.sobhan.restapi.model.coursesection.CourseSection;
-import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
-import ir.sobhan.restapi.request.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.request.coursesection.SetStudentsScoreRequest;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSectionRegistration;
+import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
+import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,11 +36,8 @@ public class CourseSectionService {
     }
     public void buildCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                      String instructorName) {
-        var term = termService.getTermByTitle(courseSectionRequest.getTermTitle())
-                .orElseThrow(() -> new ApiRequestException("Term not found!", HttpStatus.NOT_FOUND));
-
-        var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle())
-                .orElseThrow(() -> new ApiRequestException("Course not found!", HttpStatus.NOT_FOUND));
+        var term = termService.getTermByTitle(courseSectionRequest.getTermTitle());
+        var course = courseService.getCourseByTitle(courseSectionRequest.getCourseTitle());
 
         var instructor = instructorRepository.findByCustomUserUsername(instructorName)
                 .orElseThrow(() -> new ApiRequestException("Course not found!", HttpStatus.NOT_FOUND));

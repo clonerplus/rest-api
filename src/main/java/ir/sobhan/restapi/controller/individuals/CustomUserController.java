@@ -1,7 +1,7 @@
 package ir.sobhan.restapi.controller.individuals;
 
-import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.model.entity.individual.CustomUser;
+import ir.sobhan.restapi.model.output.ListResponse;
 import ir.sobhan.restapi.service.individuals.CustomUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

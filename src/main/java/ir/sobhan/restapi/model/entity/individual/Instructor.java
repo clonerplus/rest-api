@@ -1,7 +1,7 @@
-package ir.sobhan.restapi.model.individual;
+package ir.sobhan.restapi.model.entity.individual;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import ir.sobhan.restapi.model.coursesection.CourseSection;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
 import jakarta.persistence.*;
 import lombok.*;
 

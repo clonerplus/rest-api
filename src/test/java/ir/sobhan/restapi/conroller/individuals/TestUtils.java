@@ -4,15 +4,15 @@ import ir.sobhan.restapi.controller.individuals.*;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.InstructorRepository;
 import ir.sobhan.restapi.dao.StudentRepository;
-import ir.sobhan.restapi.model.individual.*;
-import ir.sobhan.restapi.request.coursesection.CourseRequest;
-import ir.sobhan.restapi.request.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.request.coursesection.TermRequest;
-import ir.sobhan.restapi.request.individuals.auth.InstructorRequest;
-import ir.sobhan.restapi.request.individuals.auth.RegisterRequest;
+import ir.sobhan.restapi.model.entity.individual.Instructor;
+import ir.sobhan.restapi.model.entity.individual.Student;
+import ir.sobhan.restapi.model.input.coursesection.CourseRequest;
+import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
+import ir.sobhan.restapi.model.input.coursesection.TermRequest;
+import ir.sobhan.restapi.model.input.individual.InstructorRequest;
+import ir.sobhan.restapi.model.input.individual.RegisterRequest;
 import ir.sobhan.restapi.service.coursesection.*;
 import ir.sobhan.restapi.service.auth.AuthenticationService;
-import ir.sobhan.restapi.service.individuals.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -74,7 +74,7 @@ public class TestUtils {
 
         termService.buildTerm(term);
 
-        return termService.getTermByTitle(term.getTitle()).get().getId();
+        return termService.getTermByTitle(term.getTitle()).getId();
     }
 
     @WithMockUser(roles = "ADMIN")
@@ -87,7 +87,7 @@ public class TestUtils {
 
         courseService.buildCourse(course);
 
-        return courseService.getCourseByTitle(course.getTitle()).get().getId();
+        return courseService.getCourseByTitle(course.getTitle()).getId();
     }
 
     public long generateCourseSection() {

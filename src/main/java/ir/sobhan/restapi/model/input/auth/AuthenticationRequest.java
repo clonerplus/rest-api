@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.request.individuals.auth;
+package ir.sobhan.restapi.model.input.auth;
 
 import lombok.*;
 

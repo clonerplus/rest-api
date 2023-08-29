@@ -1,27 +1,27 @@
-package ir.sobhan.restapi.model.coursesection;
+package ir.sobhan.restapi.model.entity.coursesection;
 
-import ir.sobhan.restapi.model.individual.Student;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseSectionRegistration {
+public class Term {
     @Id
     @GeneratedValue
     private long id;
-    private Double score;
-    @ManyToOne
-    private CourseSection courseSection;
-    @ManyToOne
-    private Student student;
+    private String title;
+    private boolean open;
+    @OneToMany(mappedBy = "term")
+    private List<CourseSection> courseSection;
 }

@@ -1,10 +1,10 @@
 package ir.sobhan.restapi.service.coursesection;
 
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseRepository;
-import ir.sobhan.restapi.model.coursesection.Course;
-import ir.sobhan.restapi.request.coursesection.CourseRequest;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.model.entity.coursesection.Course;
+import ir.sobhan.restapi.model.input.coursesection.CourseRequest;
+import ir.sobhan.restapi.model.output.ListResponse;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -31,8 +31,12 @@ public class CourseService {
 
         courseRepository.save(course);
     }
-    public Optional<Course> getCourseByTitle(@NotNull String title) {
-        return courseRepository.findByTitle(title);
+    public Course getCourseByTitle(String title) {
+        if (title == null) {
+            throw new ApiRequestException("Invalid course title", HttpStatus.BAD_REQUEST);
+        }
+        return courseRepository.findByTitle(title)
+                .orElseThrow(() -> new ApiRequestException("course not found!", HttpStatus.NOT_FOUND));
     }
     public Optional<Course> getCourseById(long id) {
         return courseRepository.findById(id);

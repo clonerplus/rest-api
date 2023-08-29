@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.response;
+package ir.sobhan.restapi.model.output;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

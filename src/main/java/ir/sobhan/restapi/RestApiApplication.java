@@ -9,9 +9,7 @@ import ir.sobhan.restapi.service.individuals.AdminService;
 @RestController
 public class RestApiApplication {
 	public static void main(String[] args) {
-
 		SpringApplication.run(RestApiApplication.class, args);
-
 		AdminService.createAdmin();
 	}
 }

@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.model.individual;
+package ir.sobhan.restapi.model.entity.individual;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

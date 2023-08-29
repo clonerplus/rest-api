@@ -1,18 +1,18 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.CourseSectionRegistrationRepository;
 import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StudentRepository;
-import ir.sobhan.restapi.model.coursesection.CourseSection;
-import ir.sobhan.restapi.model.coursesection.CourseSectionRegistration;
-import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.model.individual.Student;
-import ir.sobhan.restapi.request.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.response.GetStudentScoreResponse;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
+import ir.sobhan.restapi.model.entity.coursesection.CourseSectionRegistration;
+import ir.sobhan.restapi.model.entity.individual.CustomUser;
+import ir.sobhan.restapi.model.entity.individual.Student;
+import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
+import ir.sobhan.restapi.model.output.GetStudentScoreResponse;
+import ir.sobhan.restapi.model.output.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

@@ -1,13 +1,13 @@
 package ir.sobhan.restapi.service.individuals;
 
 import ir.sobhan.restapi.auth.Role;
-import ir.sobhan.restapi.controller.exceptions.ApiRequestException;
+import ir.sobhan.restapi.controller.exception.ApiRequestException;
 import ir.sobhan.restapi.dao.CustomUserRepository;
 import ir.sobhan.restapi.dao.StaffRepository;
-import ir.sobhan.restapi.model.individual.CustomUser;
-import ir.sobhan.restapi.model.individual.Staff;
-import ir.sobhan.restapi.request.individuals.auth.StaffRequest;
-import ir.sobhan.restapi.response.ListResponse;
+import ir.sobhan.restapi.model.entity.individual.CustomUser;
+import ir.sobhan.restapi.model.entity.individual.Staff;
+import ir.sobhan.restapi.model.input.individual.StaffRequest;
+import ir.sobhan.restapi.model.output.ListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

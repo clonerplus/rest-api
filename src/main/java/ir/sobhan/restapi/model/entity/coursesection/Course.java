@@ -1,4 +1,4 @@
-package ir.sobhan.restapi.model.coursesection;
+package ir.sobhan.restapi.model.entity.coursesection;
 
 import jakarta.persistence.*;
 import lombok.*;
