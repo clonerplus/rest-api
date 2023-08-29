@@ -12,19 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class InstructorController {
-
     private final InstructorService instructorService;
-
     @Autowired
     public InstructorController(InstructorService instructorService) {
         this.instructorService = instructorService;
     }
-
     @GetMapping("/all-instructors")
     public ResponseEntity<ListResponse<Instructor>> getAllInstructors() {
         return ResponseEntity.ok(instructorService.getAllInstructors());
     }
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/instructor")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,

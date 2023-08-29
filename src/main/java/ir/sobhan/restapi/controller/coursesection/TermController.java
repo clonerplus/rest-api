@@ -15,9 +15,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 public class TermController {
-
     private final TermService termService;
-
     @GetMapping("all-terms")
     public ResponseEntity<ListResponse<Term>> showAllTerms() {
         return ResponseEntity.ok(termService.getAllTerms());
@@ -26,7 +24,6 @@ public class TermController {
     public ResponseEntity<Optional<Term>> showTermByTitle(@PathVariable String title) {
         return ResponseEntity.ok(termService.getTermByTitle(title));
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/term")
     public ResponseEntity<String> createTerm(@RequestBody TermRequest termRequest) {
@@ -36,10 +33,9 @@ public class TermController {
             return ResponseEntity.ok("term created successfully!");
 
         } catch (ApiRequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+            return e.getResponseEntity();
         }
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/term")
     public ResponseEntity<String> updateTerm(@RequestBody TermRequest termRequest) {
@@ -49,14 +45,12 @@ public class TermController {
             return ResponseEntity.ok("term updated successfully!");
 
         } catch (ApiRequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+            return e.getResponseEntity();
         }
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @DeleteMapping("/delete/term")
     public ResponseEntity<String> deleteTerm(@RequestParam String title) {
-
         if (title == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid term title!");
 

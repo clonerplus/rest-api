@@ -17,9 +17,7 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 public class AuthenticationController {
-
     private final AuthenticationService authenticationService;
-
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         try {
@@ -42,12 +40,8 @@ public class AuthenticationController {
             return ResponseEntity.status(e.getStatus()).body(e.getMessage());
         }
     }
-
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request, response);
     }
-
-
 }
-

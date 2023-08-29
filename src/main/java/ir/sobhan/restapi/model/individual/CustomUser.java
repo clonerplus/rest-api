@@ -35,11 +35,6 @@ public class CustomUser implements UserDetails {
     private Student student;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "customUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Token> tokens;
-
-
     public void setRole(Role role) {
         this.role = role;
     }
@@ -47,32 +42,26 @@ public class CustomUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
     }
-
     @Override
     public String getUsername() {
         return username;
     }
-
     @Override
     public String getPassword() {
         return password;
     }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     @Override
     public boolean isEnabled() {
         return true;

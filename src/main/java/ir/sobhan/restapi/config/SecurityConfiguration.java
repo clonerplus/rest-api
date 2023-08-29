@@ -21,11 +21,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
-
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -47,22 +45,17 @@ public class SecurityConfiguration {
                                         new AntPathRequestMatcher("/swagger-ui/**"),
                                         new AntPathRequestMatcher("/webjars/**"),
                                         new AntPathRequestMatcher("/swagger-ui.html")
-
                                 ).permitAll()
-
                 .anyRequest()
                 .authenticated())
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
                 .logout((logout) -> logout.logoutUrl("/api/v1/auth/logout")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) ->
                                 SecurityContextHolder.clearContext()));
-
 
         return http.build();
     }

@@ -24,5 +24,4 @@ public class Term {
     private boolean open;
     @OneToMany(mappedBy = "term")
     private List<CourseSection> courseSection;
-
 }

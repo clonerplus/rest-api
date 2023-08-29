@@ -50,12 +50,10 @@ public enum Role {
                     STUDENT_DELETE,
                     STUDENT_CREATE
             )
-    )
-    ;
+    );
 
     @Getter
     private final Set<Permission> permissions;
-
     public List<SimpleGrantedAuthority> getAuthorities() {
         var authorities = getPermissions()
                 .stream()

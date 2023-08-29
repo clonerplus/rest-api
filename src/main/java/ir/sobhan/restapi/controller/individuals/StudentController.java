@@ -14,19 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class StudentController {
-
     private final StudentService studentService;
-
     @Autowired
     public StudentController(StudentService studentService){
         this.studentService = studentService;
     }
-
     @GetMapping("/all-students")
     public ResponseEntity<ListResponse<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/student")
     public ResponseEntity<String> authorizeStudent(@RequestParam String username,
@@ -53,7 +49,6 @@ public class StudentController {
             return e.getResponseEntity();
         }
     }
-
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/check-scores/{termId}")
     public ResponseEntity<String> getTermScores(@PathVariable long termId, Authentication authentication) {

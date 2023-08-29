@@ -9,16 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserService {
     private final CustomUserRepository customUserRepository;
-
     @Autowired
     public CustomUserService(CustomUserRepository customUserRepository) {
         this.customUserRepository = customUserRepository;
     }
-
     public ListResponse<CustomUser> getAllCustomUsers() {
         return ListResponse.<CustomUser>builder()
                 .responseList(customUserRepository.findAll())
                 .build();
-
     }
 }

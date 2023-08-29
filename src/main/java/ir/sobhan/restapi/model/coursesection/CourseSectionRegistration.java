@@ -24,5 +24,4 @@ public class CourseSectionRegistration {
     private CourseSection courseSection;
     @ManyToOne
     private Student student;
-
 }

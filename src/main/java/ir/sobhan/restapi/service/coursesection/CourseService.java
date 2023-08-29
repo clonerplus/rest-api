@@ -16,15 +16,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CourseService {
     private final CourseRepository courseRepository;
-
     public void buildCourse(@NotNull CourseRequest courseRequest) {
-
         courseRepository.findByTitle(courseRequest.getTitle())
                 .ifPresent(existingCourse -> {
                     throw new ApiRequestException("Course already exists!\n" +
                             "Please consider updating the course for your use", HttpStatus.BAD_REQUEST);
                 });
-
 
         var course = Course.builder()
                 .title(courseRequest.getTitle())
@@ -34,15 +31,12 @@ public class CourseService {
 
         courseRepository.save(course);
     }
-
     public Optional<Course> getCourseByTitle(@NotNull String title) {
         return courseRepository.findByTitle(title);
     }
-
     public Optional<Course> getCourseById(long id) {
         return courseRepository.findById(id);
     }
-
     public ListResponse<Course> getAllCourses() {
         return ListResponse.<Course>builder()
                 .responseList(courseRepository.findAll())
@@ -51,5 +45,4 @@ public class CourseService {
     public void deleteTerm(@NotNull String title) {
         courseRepository.deleteTermByTitle(title);
     }
-
 }

@@ -14,13 +14,11 @@ import java.util.Optional;
 
 @RestController
 public class CourseController {
-
     private final CourseService courseService;
     @Autowired
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
-
     @GetMapping("all-courses")
     public ResponseEntity<ListResponse<Course>> showAllCourses() {
         return ResponseEntity.ok(courseService.getAllCourses());
@@ -29,7 +27,6 @@ public class CourseController {
     public ResponseEntity<Optional<Course>> showTermByTitle(@PathVariable String title) {
         return ResponseEntity.ok(courseService.getCourseByTitle(title));
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/course")
     public ResponseEntity<String> createCourse(@RequestBody CourseRequest courseRequest) {
@@ -39,10 +36,9 @@ public class CourseController {
             return ResponseEntity.ok("course created successfully!");
 
         } catch (ApiRequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+            return e.getResponseEntity();
         }
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/course")
     public ResponseEntity<String> updateCourse(@RequestBody CourseRequest courseRequest) {
@@ -52,14 +48,12 @@ public class CourseController {
             return ResponseEntity.ok("course updated successfully!");
 
         } catch (ApiRequestException e) {
-            return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+            return e.getResponseEntity();
         }
     }
-
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @DeleteMapping("/delete/course")
     public ResponseEntity<String> deleteCourse(@RequestParam String title) {
-
         if (title == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid course title!");
 

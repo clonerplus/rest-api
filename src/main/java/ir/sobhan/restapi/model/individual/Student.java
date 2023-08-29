@@ -26,5 +26,4 @@ public class Student {
     @OneToMany(fetch = FetchType.EAGER)
     @Builder.Default
     private List<CourseSectionRegistration> courseSectionRegistration = new ArrayList<>();
-
 }

@@ -21,6 +21,4 @@ public class Instructor {
     private CustomUser customUser;
     @ManyToOne
     private CourseSection courseSection;
-
-
 }

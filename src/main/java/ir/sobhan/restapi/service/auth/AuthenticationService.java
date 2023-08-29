@@ -26,7 +26,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
     @Autowired
     public AuthenticationService(CustomUserRepository customUserRepository,
                                   RedisTokenRepository redisTokenRepository,
@@ -38,11 +37,9 @@ public class AuthenticationService {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
     }
-
     public void register(RegisterRequest request) {
         if (customUserRepository.findByUsername(request.getUsername()).isPresent())
-            throw new ApiRequestException("user with this username already exists!",
-                    HttpStatus.NOT_FOUND);
+            throw new ApiRequestException("user with this username already exists!", HttpStatus.NOT_FOUND);
 
         var customUser = CustomUser.builder()
                 .username(request.getUsername())
@@ -56,9 +53,7 @@ public class AuthenticationService {
 
         customUserRepository.save(customUser);
     }
-
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()));
 
@@ -76,43 +71,17 @@ public class AuthenticationService {
                 .refreshToken(refreshToken)
                 .build();
     }
-
     private void saveUserToken(CustomUser customUser, String jwtToken) {
-//        var token = Token.builder()
-//                .customUser(customUser)
-//                .token(jwtToken)
-//                .tokenType(Token.TokenType.BEARER)
-//                .expired(false)
-//                .revoked(false)
-//                .build();
-//        tokenRepository.save(token);
         redisTokenRepository.saveToken(jwtToken, customUser.getUsername(), 3600000);
         redisTokenRepository.saveToken(customUser.getUsername(), jwtToken, 3600000);
-
     }
-
     private void revokeAllUserTokens(CustomUser customUser) {
-
         var lastToken = redisTokenRepository.getToken(customUser.getUsername());
 
         redisTokenRepository.deleteToken(lastToken.get());
         redisTokenRepository.deleteToken(customUser.getUsername());
-
-//        var validUserTokens = tokenRepository.findAllValidTokenByUser(customUser.getId());
-//
-//        if (validUserTokens.isEmpty())
-//            return;
-//
-//        validUserTokens.forEach(token -> {
-//            token.setExpired(true);
-//            token.setRevoked(true);
-//        });
-//
-//        tokenRepository.saveAll(validUserTokens);
     }
-
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response
-    ) throws IOException {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;

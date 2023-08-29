@@ -18,13 +18,11 @@ import java.util.*;
 
 @Service
 public class CourseSectionService {
-
     private final TermService termService;
     private final CourseService courseService;
     private final InstructorRepository instructorRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final  CourseSectionRegistrationRepository courseSectionRegistrationRepository;
-
     @Autowired
     public CourseSectionService(TermService termService, CourseService courseService,
                                 InstructorRepository instructorRepository,
@@ -36,7 +34,6 @@ public class CourseSectionService {
         this.courseSectionRepository = courseSectionRepository;
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
     }
-
     public void buildCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                      String instructorName) {
         var term = termService.getTermByTitle(courseSectionRequest.getTermTitle())
@@ -56,24 +53,18 @@ public class CourseSectionService {
 
         courseSectionRepository.save(courseSection);
     }
-
     public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(String termTitle,
                                                                              String courseTitle) {
-
         return courseSectionRepository.findByTermTitleAndCourseTitle(termTitle, courseTitle);
     }
-
     public Optional<List<CourseSection>> getAllTermsAndStudentsCount(@NotNull String termTitle) {
         return courseSectionRepository.findAllByTermTitle(termTitle);
     }
-
     public Optional<List<CourseSection>> getAllTerms(@NotNull String termTitle) {
         return courseSectionRepository.findAllByTermTitle(termTitle);
     }
-
     public void deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                                         Authentication authentication) {
-
         CourseSection courseSection = courseSectionRepository.findByTermTitleAndCourseTitle(
                         courseSectionRequest.getTermTitle(), courseSectionRequest.getCourseTitle())
                 .orElseThrow(() -> new ApiRequestException("Course section not found",
@@ -84,11 +75,9 @@ public class CourseSectionService {
             throw new ApiRequestException("User not authorized to delete this course section",
                     HttpStatus.FORBIDDEN);
         }
-
         courseSectionRepository.deleteByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
                 courseSectionRequest.getCourseTitle());
     }
-
     private void setStudentScore(List<CourseSectionRegistration> scores,
                                  String studentId, Double score) {
         scores.stream()
@@ -98,7 +87,6 @@ public class CourseSectionService {
                     courseSectionRegistrationRepository.save(registration);
                 });
     }
-
     public void setStudentsScore(long courseSectionId,
             @NotNull SetStudentsScoreRequest setStudentsScoreRequest) {
 
@@ -106,9 +94,7 @@ public class CourseSectionService {
                 .orElseThrow(() -> new ApiRequestException("course section not found!",
                         HttpStatus.NOT_FOUND));
 
-
         setStudentsScoreRequest.getScores().forEach((studentId, score) ->
                 setStudentScore(courseSection.getCourseSectionRegistration(), studentId, score));
     }
-
 }

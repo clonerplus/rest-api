@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LogoutService implements LogoutHandler {
-
     private final RedisTokenRepository redisTokenRepository;
-
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response,
                        Authentication authentication) {
@@ -29,14 +27,6 @@ public class LogoutService implements LogoutHandler {
                 .orElse(null);
         redisTokenRepository.deleteToken(storedToken);
         redisTokenRepository.deleteToken(jwt);
-//        var storedToken = tokenRepository.findByToken(jwt)
-//                .orElse(null);
-//        if (storedToken != null) {
-//            storedToken.setExpired(true);
-//            storedToken.setRevoked(true);
-//            tokenRepository.save(storedToken);
-//            SecurityContextHolder.clearContext();
-//        }
     }
 }
 

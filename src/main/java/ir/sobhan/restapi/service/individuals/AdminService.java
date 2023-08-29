@@ -13,24 +13,18 @@ public class AdminService {
     private static AdminConfig adminConfig;
     private static CustomUserRepository customUserRepository;
     private static PasswordEncoder passwordEncoder;
-
     @Autowired
     public void setSecurityConfig(AdminConfig adminConfig) {
         AdminService.adminConfig = adminConfig;
     }
-
     @Autowired
     public void setCustomUserRepository(CustomUserRepository customUserRepository) {
         AdminService.customUserRepository = customUserRepository;
     }
-
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         AdminService.passwordEncoder = passwordEncoder;
     }
-
-
-
     public static void createAdmin() {
         String username = adminConfig.getAdminUsername();
         String password = adminConfig.getAdminPassword();
@@ -51,7 +45,6 @@ public class AdminService {
                 .staff(null)
                 .student(null)
                 .role(Role.ADMIN)
-                .tokens(null)
                 .build();
         customUserRepository.save(admin);
     }
