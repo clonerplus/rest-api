@@ -8,7 +8,6 @@ import ir.sobhan.restapi.model.entity.individual.CustomUser;
 import ir.sobhan.restapi.model.entity.individual.Staff;
 import ir.sobhan.restapi.model.input.individual.StaffRequest;
 import ir.sobhan.restapi.model.output.ListResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ public class StaffService {
     private final CustomUserRepository customUserRepository;
     private final StaffRepository staffRepository;
 
-    @Autowired
     public StaffService(CustomUserRepository customUserRepository, StaffRepository staffRepository) {
         this.customUserRepository = customUserRepository;
         this.staffRepository = staffRepository;

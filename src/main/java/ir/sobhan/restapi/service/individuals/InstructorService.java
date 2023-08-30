@@ -8,7 +8,6 @@ import ir.sobhan.restapi.model.entity.individual.CustomUser;
 import ir.sobhan.restapi.model.entity.individual.Instructor;
 import ir.sobhan.restapi.model.input.individual.InstructorRequest;
 import ir.sobhan.restapi.model.output.ListResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ public class InstructorService {
     private final CustomUserRepository customUserRepository;
     private final InstructorRepository instructorRepository;
 
-    @Autowired
     public InstructorService(CustomUserRepository customUserRepository, InstructorRepository instructorRepository) {
         this.customUserRepository = customUserRepository;
         this.instructorRepository = instructorRepository;

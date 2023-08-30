@@ -6,7 +6,6 @@ import ir.sobhan.restapi.model.entity.coursesection.Term;
 import ir.sobhan.restapi.model.input.coursesection.TermRequest;
 import ir.sobhan.restapi.model.output.ListResponse;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class TermService {
     private final TermRepository termRepository;
 
-    @Autowired
     public TermService(TermRepository termRepository) {
         this.termRepository = termRepository;
     }

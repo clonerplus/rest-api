@@ -1,18 +1,20 @@
 package ir.sobhan.restapi.service.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ir.sobhan.restapi.auth.*;
+import ir.sobhan.restapi.auth.Role;
 import ir.sobhan.restapi.controller.exception.ApiRequestException;
-import ir.sobhan.restapi.dao.*;
+import ir.sobhan.restapi.dao.CustomUserRepository;
+import ir.sobhan.restapi.dao.RedisTokenRepository;
 import ir.sobhan.restapi.model.entity.individual.CustomUser;
 import ir.sobhan.restapi.model.input.auth.AuthenticationRequest;
 import ir.sobhan.restapi.model.input.individual.RegisterRequest;
 import ir.sobhan.restapi.model.output.AuthenticationResponse;
-import jakarta.servlet.http.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    @Autowired
+
     public AuthenticationService(CustomUserRepository customUserRepository,
                                  RedisTokenRepository redisTokenRepository,
                                  PasswordEncoder passwordEncoder, JwtService jwtService,
@@ -38,6 +40,7 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
     }
+
     public void register(RegisterRequest request) {
         customUserRepository.findByUsername(request.getUsername())
                 .ifPresent(user -> {
@@ -56,6 +59,7 @@ public class AuthenticationService {
 
         customUserRepository.save(customUser);
     }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(), request.getPassword()));
@@ -74,10 +78,12 @@ public class AuthenticationService {
                 .refreshToken(refreshToken)
                 .build();
     }
+
     private void saveUserToken(CustomUser customUser, String jwtToken) {
         redisTokenRepository.saveToken(jwtToken, customUser.getUsername(), 3600000);
         redisTokenRepository.saveToken(customUser.getUsername(), jwtToken, 3600000);
     }
+
     private void revokeAllUserTokens(CustomUser customUser) {
         redisTokenRepository.getToken(customUser.getUsername())
                 .ifPresent(token -> {
@@ -85,6 +91,7 @@ public class AuthenticationService {
                     redisTokenRepository.deleteToken(customUser.getUsername());
                 });
     }
+
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
