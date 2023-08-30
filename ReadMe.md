@@ -115,6 +115,8 @@ curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer <acce
 | Parameter                             | Type   | Description                                |
 |:--------------------------------------|:-------|:-------------------------------------------|
 | `customUser json authentication file` | `POST` | **Required** correct username and password |
+
+
 **If you found this project helpful, consider giving it a star ⭐️ for others to find! ❤️** 
 
 [![GitHub stars](https://img.shields.io/github/stars/clonerplus/rest-api.svg?style=social&label=Star)](https://github.com/clonerplus/rest-api)
