@@ -89,16 +89,26 @@ public class CourseSectionService {
 
     private void setStudentScore(Map<String, Double> setStudentsScoreRequest,
                                  List<CourseSectionRegistration> courseSectionRegistrationList) {
-        setStudentsScoreRequest.forEach((studentId, score) ->
-                courseSectionRegistrationList.stream()
-                        .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
-                        .forEach(registration -> registration.setScore(score)));
-        courseSectionRegistrationRepository.saveAll(courseSectionRegistrationList);
+        Map<String, Double> studentScoreMap = new HashMap<>(setStudentsScoreRequest);
+        List<CourseSectionRegistration> updatedRegistrations = courseSectionRegistrationList.stream()
+                .map(registration -> {
+                    String studentId = registration.getStudent().getStudentId();
+                    Double score = studentScoreMap.get(studentId);
+                    if (score != null) {
+                        registration.setScore(score);
+                        return registration;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        courseSectionRegistrationRepository.saveAll(updatedRegistrations);
     }
+
 
     public void setStudentsScore(long courseSectionId,
             @NotNull Map<String, Double> setStudentsScoreRequest) {
-
         var courseSection = courseSectionRepository.findById(courseSectionId)
                 .orElseThrow(() -> new ApiRequestException("course section not found!",
                         HttpStatus.NOT_FOUND));

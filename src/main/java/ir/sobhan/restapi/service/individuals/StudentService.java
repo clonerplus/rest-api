@@ -54,7 +54,6 @@ public class StudentService {
     }
 
     public void authorizeStudent(String username, Student student) {
-
         if (username == null)
             throw new ApiRequestException("Invalid username!", HttpStatus.NOT_FOUND);
 
@@ -65,14 +64,11 @@ public class StudentService {
     }
 
     private Optional<CourseSection> findCourseSection(CourseSectionRequest courseSectionRequest) {
-
-        return courseSectionRepository.findByTermTitleAndCourseTitle(
-                courseSectionRequest.getTermTitle(),
+        return courseSectionRepository.findByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
                 courseSectionRequest.getCourseTitle());
     }
 
-    private CourseSectionRegistration buildCourseSectionRegistration(Student student,
-                                                                     CourseSection courseSection) {
+    private CourseSectionRegistration buildCourseSectionRegistration(Student student, CourseSection courseSection) {
         return CourseSectionRegistration.builder()
                 .courseSection(courseSection)
                 .student(student)
@@ -115,18 +111,13 @@ public class StudentService {
     public void joinCourseSection(CourseSectionRequest courseSectionRequest, Authentication authentication) {
         var courseSection = fetchCourseSection(courseSectionRequest);
         var student = fetchStudent(authentication.getName());
-
         var courseSectionRegistration = buildCourseSectionRegistration(student, courseSection);
-
         var courseSectionRegistrationList = setStudentCourseSectionRegistrationList(student,
                 courseSectionRegistration);
-
         student.setCourseSectionRegistration(courseSectionRegistrationList);
-
         courseSectionRegistrationList = setCourseSectionCourseSectionRegistrationList(courseSection,
                 courseSectionRegistration);
         courseSection.setCourseSectionRegistration(courseSectionRegistrationList);
-
         saveCourseSectionRecordsToDatabase(courseSection, courseSectionRegistration, student);
     }
 
