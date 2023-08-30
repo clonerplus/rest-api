@@ -14,10 +14,16 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_username", columnList = "username"),
+        @Index(name = "idx_phone", columnList = "phone"),
+        @Index(name = "idx_national_id", columnList = "nationalId")
+})
 public class CustomUser implements UserDetails {
     @Id
     @GeneratedValue
     private long id;
+    @Column(unique = true)
     private String username;
     private String password;
     private String phone;

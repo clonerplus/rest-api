@@ -42,11 +42,9 @@ public class AuthenticationService {
     }
 
     public void register(RegisterRequest request) {
-        customUserRepository.findByUsername(request.getUsername())
-                .ifPresent(user -> {
+        if (customUserRepository.existsByUsername(request.getUsername()))
                     throw new ApiRequestException("User with this username already exists!",
                             HttpStatus.BAD_REQUEST);
-                });
         var customUser = CustomUser.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
