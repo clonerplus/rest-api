@@ -7,7 +7,6 @@ import ir.sobhan.restapi.dao.InstructorRepository;
 import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
 import ir.sobhan.restapi.model.entity.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -88,9 +87,9 @@ public class CourseSectionService {
                 courseSectionRequest.getCourseTitle());
     }
 
-    private void setStudentScore(SetStudentsScoreRequest setStudentsScoreRequest,
+    private void setStudentScore(Map<String, Double> setStudentsScoreRequest,
                                  List<CourseSectionRegistration> courseSectionRegistrationList) {
-        setStudentsScoreRequest.getScores().forEach((studentId, score) ->
+        setStudentsScoreRequest.forEach((studentId, score) ->
                 courseSectionRegistrationList.stream()
                         .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
                         .forEach(registration -> registration.setScore(score)));
@@ -98,7 +97,7 @@ public class CourseSectionService {
     }
 
     public void setStudentsScore(long courseSectionId,
-            @NotNull SetStudentsScoreRequest setStudentsScoreRequest) {
+            @NotNull Map<String, Double> setStudentsScoreRequest) {
 
         var courseSection = courseSectionRepository.findById(courseSectionId)
                 .orElseThrow(() -> new ApiRequestException("course section not found!",

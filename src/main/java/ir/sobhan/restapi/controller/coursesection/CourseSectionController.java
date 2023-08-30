@@ -2,7 +2,6 @@ package ir.sobhan.restapi.controller.coursesection;
 
 import ir.sobhan.restapi.model.entity.coursesection.CourseSection;
 import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import ir.sobhan.restapi.model.output.ListResponse;
 import ir.sobhan.restapi.service.coursesection.CourseSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,8 @@ import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 public class CourseSectionController {
@@ -47,7 +48,7 @@ public class CourseSectionController {
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping("set-scores/{courseSectionId}")
     public ResponseEntity<String> setStudentsScores(@PathVariable long courseSectionId,
-            @RequestBody SetStudentsScoreRequest setStudentsScoreRequest) {
+            @RequestBody Map<String, Double> setStudentsScoreRequest) {
         courseSectionService.setStudentsScore(courseSectionId, setStudentsScoreRequest);
         return ResponseEntity.ok("updated scores successfully!");
     }

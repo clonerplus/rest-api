@@ -6,7 +6,6 @@ import ir.sobhan.restapi.dao.CourseSectionRepository;
 import ir.sobhan.restapi.dao.StudentRepository;
 import ir.sobhan.restapi.model.entity.individual.Student;
 import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import ir.sobhan.restapi.service.coursesection.CourseService;
 import ir.sobhan.restapi.service.coursesection.TermService;
 import ir.sobhan.restapi.service.auth.AuthenticationService;
@@ -84,9 +83,7 @@ public class StudentControllerTest {
 
         studentController.joinCourseSection(courseSectionRequest, authentication);
 
-        SetStudentsScoreRequest setStudentsScoreRequest = SetStudentsScoreRequest.builder()
-                .scores(new HashMap<>(Map.of("124241244", 17.5)))
-                .build();
+        Map<String, Double> setStudentsScoreRequest = new HashMap<>(Map.of("124241244", 17.5));
 
         courseSectionController.setStudentsScores(courseSectionId, setStudentsScoreRequest);
         

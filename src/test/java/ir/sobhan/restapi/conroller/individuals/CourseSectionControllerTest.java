@@ -4,7 +4,6 @@ import ir.sobhan.restapi.controller.coursesection.*;
 import ir.sobhan.restapi.controller.individuals.*;
 import ir.sobhan.restapi.dao.*;
 import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
-import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import ir.sobhan.restapi.service.coursesection.CourseService;
 import ir.sobhan.restapi.service.coursesection.TermService;
 import org.junit.jupiter.api.Test;
@@ -67,9 +66,7 @@ public class CourseSectionControllerTest {
 
         studentController.joinCourseSection(courseSectionRequest, authentication);
 
-        SetStudentsScoreRequest setStudentsScoreRequest = SetStudentsScoreRequest.builder()
-                        .scores(new HashMap<>(Map.of("124241244", 17.5)))
-                        .build();
+        Map<String, Double> setStudentsScoreRequest = new HashMap<>(Map.of("124241244", 17.5));
 
         courseSectionController.setStudentsScores(courseSectionId, setStudentsScoreRequest);
 
