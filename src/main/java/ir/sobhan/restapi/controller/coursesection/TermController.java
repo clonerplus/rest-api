@@ -13,26 +13,31 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class TermController {
     private final TermService termService;
+
     @GetMapping("all-terms")
     public ResponseEntity<ListResponse<Term>> showAllTerms() {
         return ResponseEntity.ok(termService.getAllTerms());
     }
+
     @GetMapping("all-terms/{title}")
     public ResponseEntity<Term> showTermByTitle(@PathVariable String title) {
         return ResponseEntity.ok(termService.getTermByTitle(title));
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/term")
     public ResponseEntity<String> createTerm(@RequestBody TermRequest termRequest) {
         termService.buildTerm(termRequest);
         return ResponseEntity.ok("term created successfully!");
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/term")
     public ResponseEntity<String> updateTerm(@RequestBody TermRequest termRequest) {
         termService.buildTerm(termRequest);
         return ResponseEntity.ok("term updated successfully!");
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @DeleteMapping("/delete/term")
     public ResponseEntity<String> deleteTerm(@RequestParam String title) {

@@ -15,10 +15,12 @@ import java.util.Optional;
 @Service
 public class TermService {
     private final TermRepository termRepository;
+
     @Autowired
     public TermService(TermRepository termRepository) {
         this.termRepository = termRepository;
     }
+
     public void buildTerm(@NotNull TermRequest termRequest) {
         termRepository.findByTitle(termRequest.getTitle())
                 .ifPresent(existingCourse -> {
@@ -33,6 +35,7 @@ public class TermService {
 
         termRepository.save(term);
     }
+
     public Term getTermByTitle(String title) {
         if (title == null) {
             throw new ApiRequestException("Invalid term title", HttpStatus.BAD_REQUEST);
@@ -40,14 +43,17 @@ public class TermService {
         return termRepository.findByTitle(title)
                 .orElseThrow(() -> new ApiRequestException("term not found!", HttpStatus.NOT_FOUND));
     }
+
     public Optional<Term> getTermById(long id) {
         return termRepository.findById(id);
     }
+
     public ListResponse<Term> getAllTerms() {
         return ListResponse.<Term>builder()
                 .responseList(termRepository.findAll())
                 .build();
     }
+
     public void deleteTerm(@NotNull String title) {
         termRepository.deleteTermByTitle(title);
     }

@@ -31,6 +31,7 @@ public class CourseService {
 
         courseRepository.save(course);
     }
+
     public Course getCourseByTitle(String title) {
         if (title == null) {
             throw new ApiRequestException("Invalid course title", HttpStatus.BAD_REQUEST);
@@ -38,14 +39,17 @@ public class CourseService {
         return courseRepository.findByTitle(title)
                 .orElseThrow(() -> new ApiRequestException("course not found!", HttpStatus.NOT_FOUND));
     }
+
     public Optional<Course> getCourseById(long id) {
         return courseRepository.findById(id);
     }
+
     public ListResponse<Course> getAllCourses() {
         return ListResponse.<Course>builder()
                 .responseList(courseRepository.findAll())
                 .build();
     }
+
     public void deleteTerm(@NotNull String title) {
         courseRepository.deleteTermByTitle(title);
     }

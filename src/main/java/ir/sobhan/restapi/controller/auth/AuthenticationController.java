@@ -17,16 +17,19 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         authenticationService.register(request);
         return ResponseEntity.ok("user successfully registered!");
     }
+
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody AuthenticationRequest request) {
         var authenticationResponse = authenticationService.authenticate(request);
         return ResponseEntity.ok(String.valueOf(authenticationResponse));
     }
+
     @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request, response);

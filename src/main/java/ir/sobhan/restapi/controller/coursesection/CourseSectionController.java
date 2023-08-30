@@ -14,24 +14,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CourseSectionController {
     private final CourseSectionService courseSectionService;
+
     @Autowired
     public CourseSectionController(CourseSectionService courseSectionService) {
         this.courseSectionService = courseSectionService;
     }
+
     @GetMapping("all-course-sections/{termTitle}")
     public ResponseEntity<ListResponse<CourseSection>> showAllTerms(@PathVariable String termTitle) {
         var termCourseSections = courseSectionService.getAllTerms(termTitle);
-        return termCourseSections.map(courseSections -> ResponseEntity.ok(ListResponse.<CourseSection>builder()
-                .responseList(courseSections)
-                .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok(ListResponse.<CourseSection>builder()
+                .responseList(termCourseSections)
+                .build());
     }
+
     @GetMapping("all-course-sections-and-students/{termTitle}")
     public ResponseEntity<ListResponse<CourseSection>> showTermByTitle(@PathVariable String termTitle) {
         var termCourseSections = courseSectionService.getAllTermsAndStudentsCount(termTitle);
-        return termCourseSections.map(courseSections -> ResponseEntity.ok(ListResponse.<CourseSection>builder()
-                .responseList(courseSections)
-                .build())).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.ok(ListResponse.<CourseSection>builder()
+                .responseList(termCourseSections)
+                .build());
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/create/course-section")
     public ResponseEntity<String> createCourseSection(@RequestBody CourseSectionRequest courseSectionRequest,
@@ -39,6 +43,7 @@ public class CourseSectionController {
         courseSectionService.buildCourseSection(courseSectionRequest, authentication.getName());
         return ResponseEntity.ok("courseSection created successfully!");
     }
+
     @PreAuthorize("hasRole('INSTRUCTOR')")
     @PostMapping("set-scores/{courseSectionId}")
     public ResponseEntity<String> setStudentsScores(@PathVariable long courseSectionId,
@@ -46,6 +51,7 @@ public class CourseSectionController {
         courseSectionService.setStudentsScore(courseSectionId, setStudentsScoreRequest);
         return ResponseEntity.ok("updated scores successfully!");
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PutMapping("/update/course-section")
     public ResponseEntity<String> updateCourseSection(
@@ -53,6 +59,7 @@ public class CourseSectionController {
         courseSectionService.buildCourseSection(courseSectionRequest, authentication.getName());
         return ResponseEntity.ok("courseSection created successfully!");
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @DeleteMapping("/delete/course-section")
     public ResponseEntity<String> deleteTerm(@RequestBody CourseSectionRequest courseSectionRequest,

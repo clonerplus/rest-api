@@ -16,16 +16,19 @@ import org.springframework.stereotype.Service;
 public class InstructorService {
     private final CustomUserRepository customUserRepository;
     private final InstructorRepository instructorRepository;
+
     @Autowired
     public InstructorService(CustomUserRepository customUserRepository, InstructorRepository instructorRepository) {
         this.customUserRepository = customUserRepository;
         this.instructorRepository = instructorRepository;
     }
+
     public ListResponse<Instructor> getAllInstructors() {
         return ListResponse.<Instructor>builder()
                 .responseList(instructorRepository.findAll())
                 .build();
     }
+
     public void authorizeInstructor(String username, InstructorRequest instructorRequest) {
         if (username == null)
             throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);

@@ -9,7 +9,6 @@ import ir.sobhan.restapi.model.entity.coursesection.CourseSectionRegistration;
 import ir.sobhan.restapi.model.input.coursesection.CourseSectionRequest;
 import ir.sobhan.restapi.model.input.coursesection.SetStudentsScoreRequest;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class CourseSectionService {
     private final InstructorRepository instructorRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final  CourseSectionRegistrationRepository courseSectionRegistrationRepository;
-    @Autowired
+
     public CourseSectionService(TermService termService, CourseService courseService,
                                 InstructorRepository instructorRepository,
                                 CourseSectionRepository courseSectionRepository,
@@ -34,6 +33,7 @@ public class CourseSectionService {
         this.courseSectionRepository = courseSectionRepository;
         this.courseSectionRegistrationRepository = courseSectionRegistrationRepository;
     }
+
     public void buildCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                      String instructorName) {
         var term = termService.getTermByTitle(courseSectionRequest.getTermTitle());
@@ -50,16 +50,28 @@ public class CourseSectionService {
 
         courseSectionRepository.save(courseSection);
     }
+
     public Optional<CourseSection> getCourseSectionByTermTitleAndCourseTitle(String termTitle,
                                                                              String courseTitle) {
         return courseSectionRepository.findByTermTitleAndCourseTitle(termTitle, courseTitle);
     }
-    public Optional<List<CourseSection>> getAllTermsAndStudentsCount(@NotNull String termTitle) {
-        return courseSectionRepository.findAllByTermTitle(termTitle);
+
+    public List<CourseSection> getAllTermsAndStudentsCount(String termTitle) {
+        if (termTitle == null) {
+            throw new ApiRequestException("invalid term title!", HttpStatus.BAD_REQUEST);
+        }
+        return courseSectionRepository.findAllByTermTitle(termTitle)
+                .orElseThrow(() -> new ApiRequestException("term not found!", HttpStatus.NOT_FOUND));
     }
-    public Optional<List<CourseSection>> getAllTerms(@NotNull String termTitle) {
-        return courseSectionRepository.findAllByTermTitle(termTitle);
+
+    public List<CourseSection> getAllTerms(String termTitle) {
+        if (termTitle == null) {
+            throw new ApiRequestException("invalid term title!", HttpStatus.BAD_REQUEST);
+        }
+        return courseSectionRepository.findAllByTermTitle(termTitle)
+                .orElseThrow(() -> new ApiRequestException("term not found!", HttpStatus.NOT_FOUND));
     }
+
     public void deleteCourseSection(@NotNull CourseSectionRequest courseSectionRequest,
                                                         Authentication authentication) {
         CourseSection courseSection = courseSectionRepository.findByTermTitleAndCourseTitle(
@@ -75,15 +87,16 @@ public class CourseSectionService {
         courseSectionRepository.deleteByTermTitleAndCourseTitle(courseSectionRequest.getTermTitle(),
                 courseSectionRequest.getCourseTitle());
     }
-    private void setStudentScore(List<CourseSectionRegistration> scores,
-                                 String studentId, Double score) {
-        scores.stream()
-                .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
-                .forEach(registration -> {
-                    registration.setScore(score);
-                    courseSectionRegistrationRepository.save(registration);
-                });
+
+    private void setStudentScore(SetStudentsScoreRequest setStudentsScoreRequest,
+                                 List<CourseSectionRegistration> courseSectionRegistrationList) {
+        setStudentsScoreRequest.getScores().forEach((studentId, score) ->
+                courseSectionRegistrationList.stream()
+                        .filter(registration -> registration.getStudent().getStudentId().equals(studentId))
+                        .forEach(registration -> registration.setScore(score)));
+        courseSectionRegistrationRepository.saveAll(courseSectionRegistrationList);
     }
+
     public void setStudentsScore(long courseSectionId,
             @NotNull SetStudentsScoreRequest setStudentsScoreRequest) {
 
@@ -91,7 +104,7 @@ public class CourseSectionService {
                 .orElseThrow(() -> new ApiRequestException("course section not found!",
                         HttpStatus.NOT_FOUND));
 
-        setStudentsScoreRequest.getScores().forEach((studentId, score) ->
-                setStudentScore(courseSection.getCourseSectionRegistration(), studentId, score));
+        var courseSectionRegistrationList = courseSection.getCourseSectionRegistration();
+        setStudentScore(setStudentsScoreRequest, courseSectionRegistrationList);
     }
 }

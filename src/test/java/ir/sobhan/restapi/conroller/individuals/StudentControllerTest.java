@@ -45,15 +45,6 @@ public class StudentControllerTest {
     @Autowired
     TestUtils testUtils;
 
-//    @BeforeEach
-//    void setUp() {
-//        testUtils.generateStudent();
-//    }
-//
-//    @AfterEach
-//    void tearDown() {
-//        testUtils.clearCustomUserRepository();
-//    }
     @Test
     @WithMockUser(roles = "ADMIN")
     void authorizeStudent() {

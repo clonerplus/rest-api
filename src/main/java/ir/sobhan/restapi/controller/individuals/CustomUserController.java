@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CustomUserController {
     private final CustomUserService customUserService;
+
     @Autowired
     public CustomUserController(CustomUserService customUserService) {
         this.customUserService = customUserService;
     }
+
     @GetMapping("/all-users")
     public ResponseEntity<ListResponse<CustomUser>> getAllRegisteredUsers() {
         return ResponseEntity.ok(customUserService.getAllCustomUsers());

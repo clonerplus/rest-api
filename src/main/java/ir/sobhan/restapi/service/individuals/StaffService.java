@@ -16,16 +16,19 @@ import org.springframework.stereotype.Service;
 public class StaffService {
     private final CustomUserRepository customUserRepository;
     private final StaffRepository staffRepository;
+
     @Autowired
     public StaffService(CustomUserRepository customUserRepository, StaffRepository staffRepository) {
         this.customUserRepository = customUserRepository;
         this.staffRepository = staffRepository;
     }
+
     public ListResponse<Staff> getAllStaffs() {
         return ListResponse.<Staff>builder()
                 .responseList(staffRepository.findAll())
                 .build();
     }
+
     public void authorizeStaff(String username, StaffRequest staffRequest) {
         if (username == null)
             throw new ApiRequestException("Invalid username!", HttpStatus.BAD_REQUEST);

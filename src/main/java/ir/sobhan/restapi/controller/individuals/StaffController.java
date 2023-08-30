@@ -12,14 +12,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class StaffController {
     private final StaffService staffService;
+
     @Autowired
     public StaffController(StaffService staffService) {
         this.staffService = staffService;
     }
+
     @GetMapping("/all-staffs")
     public ResponseEntity<ListResponse<Staff>> getAllInstructors() {
         return ResponseEntity.ok(staffService.getAllStaffs());
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/staff")
     public ResponseEntity<String> authorizeInstructor(@RequestParam String username,

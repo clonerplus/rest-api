@@ -13,18 +13,22 @@ public class AdminService {
     private static AdminConfig adminConfig;
     private static CustomUserRepository customUserRepository;
     private static PasswordEncoder passwordEncoder;
+
     @Autowired
     public void setSecurityConfig(AdminConfig adminConfig) {
         AdminService.adminConfig = adminConfig;
     }
+
     @Autowired
     public void setCustomUserRepository(CustomUserRepository customUserRepository) {
         AdminService.customUserRepository = customUserRepository;
     }
+
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         AdminService.passwordEncoder = passwordEncoder;
     }
+
     public static void createAdmin() {
         String username = adminConfig.getUsername();
         String password = adminConfig.getPassword();

@@ -13,20 +13,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class StudentController {
     private final StudentService studentService;
+
     @Autowired
     public StudentController(StudentService studentService){
         this.studentService = studentService;
     }
+
     @GetMapping("/all-students")
     public ResponseEntity<ListResponse<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/authorize/student")
     public ResponseEntity<String> authorizeStudent(@RequestParam String username, @RequestBody Student student) {
             studentService.authorizeStudent(username, student);
             return ResponseEntity.ok("Authorized user to student limits successfully");
     }
+
     @PreAuthorize("hasRole('STUDENT')")
     @PostMapping("/join-course-section")
     public ResponseEntity<String> joinCourseSection(@RequestBody CourseSectionRequest courseSectionRequest,
@@ -34,6 +38,7 @@ public class StudentController {
         studentService.joinCourseSection(courseSectionRequest, authentication);
         return ResponseEntity.ok("joined to course section successfully!");
     }
+
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/check-scores/{termId}")
     public ResponseEntity<String> getTermScores(@PathVariable long termId, Authentication authentication) {
