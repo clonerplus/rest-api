@@ -12,6 +12,9 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Table(indexes = {
+        @Index(name = "studentId", columnList = "id")
+})
 public class Student {
     @Id
     @GeneratedValue

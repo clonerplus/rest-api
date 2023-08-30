@@ -106,7 +106,6 @@ public class CourseSectionService {
         courseSectionRegistrationRepository.saveAll(updatedRegistrations);
     }
 
-
     public void setStudentsScore(long courseSectionId,
             @NotNull Map<String, Double> setStudentsScoreRequest) {
         var courseSection = courseSectionRepository.findById(courseSectionId)

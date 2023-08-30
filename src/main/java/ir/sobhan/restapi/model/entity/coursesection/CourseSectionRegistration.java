@@ -1,10 +1,7 @@
 package ir.sobhan.restapi.model.entity.coursesection;
 
 import ir.sobhan.restapi.model.entity.individual.Student;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +12,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "courseSectionRegistrationId", columnList = "id"),
+        @Index(name = "courseSectionRegistrationStudent", columnList = "student"),
+        @Index(name = "courseSectionRegistrationCourseSection", columnList = "courseSection")
+})
 public class CourseSectionRegistration {
     @Id
     @GeneratedValue
     private long id;
     private Double score;
     @ManyToOne
-    private CourseSection courseSection;
-    @ManyToOne
+    @JoinColumn(name = "student")
     private Student student;
+    @ManyToOne
+    @JoinColumn(name = "courseSection")
+    private CourseSection courseSection;
 }

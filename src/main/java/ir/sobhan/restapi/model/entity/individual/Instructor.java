@@ -10,6 +10,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Table(indexes = {
+        @Index(name = "instructorId", columnList = "id")
+})
 public class Instructor {
     @Id
     @GeneratedValue
